@@ -4,8 +4,9 @@ import logo from '../assets/images/logo.png';
 import profile from '../assets/images/pic3.webp';
 import { logout } from "../utils/auth";
 import { adminRoute } from "../utils/router";
-import { getUnreadNotifications } from "../api/notification";
+import { getUnreadNotifications, markAsRead } from "../api/notification";
 import { getUnreadMessages } from "../api/message";
+import { toast } from "react-toastify";
 
 const AdminHeader = () => {
     const navigate = useNavigate();
@@ -32,6 +33,15 @@ const AdminHeader = () => {
         logout();
         navigate(adminRoute('/login'));
         window.location.reload();
+    };
+
+    const toggleRead = async (id) => {
+        try {
+            await markAsRead(id);
+            await getUnreadNotifications();
+        } catch (err) {
+            toast.error(err.message);
+        }
     };
 
     return (
@@ -72,7 +82,7 @@ const AdminHeader = () => {
                                 <li><hr className="dropdown-divider" /></li>
                                 {notifications.length > 0 ? (
                                     notifications.map((note, idx) => (
-                                        <li key={idx}>
+                                        <li key={idx} onClick={() => toggleRead(note?._id)}>
                                             <div className="dropdown-item">
                                                 <strong>{note.title}</strong><br />
                                                 <small className="text-muted">{note.body}</small>

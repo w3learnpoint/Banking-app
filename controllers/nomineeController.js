@@ -9,7 +9,7 @@ import {
 // ✅ POST /nominees
 export const createNominee = async (req, res) => {
     try {
-        const { user, name, relation, age } = req.body;
+        const { user, name, relation, age, mobile } = req.body;
 
         if (!user || !name || !relation || !age) {
             return badRequestResponse(res, 400, "User, name, relation, and age are required");

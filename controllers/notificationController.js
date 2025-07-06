@@ -9,7 +9,7 @@ export const getNotifications = async (req, res) => {
         if (unreadOnly === 'true') filter.isRead = false;
 
         const [data, count] = await Promise.all([
-            Notification.find(filter)
+            Notification.find()
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(Number(limit)),

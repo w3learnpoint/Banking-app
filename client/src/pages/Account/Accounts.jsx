@@ -141,7 +141,7 @@ const Accounts = () => {
                                                     <button
                                                         className="btn btn-sm btn-outline-info me-2"
                                                         onClick={() => {
-                                                            if (!hasPermission(userPermissions, 'GET:/accounts')) {
+                                                            if (!hasPermission(userPermissions, `GET:/accounts/${user._id}`)) {
                                                                 setShow403Modal(true);
                                                                 return;
                                                             }

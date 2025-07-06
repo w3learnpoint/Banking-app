@@ -21,6 +21,7 @@ const AccountDetailsTab = ({ userId, onNext }) => {
         accountNumber: '',
         introducerName: '',
         membershipNumber: '',
+        tenure: '',
         address: {
             village: '',
             post: '',
@@ -104,7 +105,7 @@ const AccountDetailsTab = ({ userId, onNext }) => {
     };
 
     const validateForm = () => {
-        const requiredFields = [
+        const alwaysRequired = [
             'branch',
             'fatherOrHusbandName',
             'mobile',
@@ -112,15 +113,19 @@ const AccountDetailsTab = ({ userId, onNext }) => {
             'depositAmount',
             'accountType',
             'formDate',
-            'accountNumber',
             'membershipNumber'
         ];
 
-        for (let field of requiredFields) {
+        for (let field of alwaysRequired) {
             if (!form[field]) {
                 toast.error(`Please fill out the ${field} field.`);
                 return false;
             }
+        }
+
+        if (form.accountType === 'RD' && !form.tenure) {
+            toast.error('Please enter tenure for RD account');
+            return false;
         }
 
         const cleanMobile = form.mobile.replace(/\D/g, '');
@@ -154,10 +159,19 @@ const AccountDetailsTab = ({ userId, onNext }) => {
         try {
             const payload = {
                 ...form,
-                mobile: form.mobile.replace(/\D/g, ''), // save raw digits
+                mobile: form.mobile.replace(/\D/g, ''),
                 user: userId
             };
-            await upsertAccountDetails(payload);
+
+            const res = await upsertAccountDetails(payload);
+
+            if (res?.accountNumber) {
+                setForm(prev => ({
+                    ...prev,
+                    accountNumber: res.accountNumber
+                }));
+            }
+
             toast.success('Account details saved');
             if (onNext) onNext();
         } catch (err) {
@@ -167,29 +181,58 @@ const AccountDetailsTab = ({ userId, onNext }) => {
         }
     };
 
-    const fields = [
-        { name: 'branch', label: 'Branch' },
-        { name: 'fatherOrHusbandName', label: 'Father/Husband Name' },
-        { name: 'guardianName', label: 'Guardian Name' },
-        { name: 'address.village', label: 'Village' },
-        { name: 'address.post', label: 'Post' },
-        { name: 'address.block', label: 'Block' },
-        { name: 'address.district', label: 'District' },
-        { name: 'address.pincode', label: 'Pincode' },
-        { name: 'mobile', label: 'Mobile', type: 'tel' },
-        { name: 'aadhar', label: 'Aadhar' },
-        { name: 'depositAmount', label: 'Deposit Amount', type: 'number' },
-        { name: 'accountType', label: 'Account Type' },
-        { name: 'formDate', label: 'Form Date', type: 'date' },
-        { name: 'accountNumber', label: 'Account Number' },
-        { name: 'introducerName', label: 'Introducer Name' },
-        { name: 'membershipNumber', label: 'Membership Number' }
-    ];
-
     return (
         <form onSubmit={handleSubmit}>
             <div className="row">
-                {fields.map(({ name, label, type = 'text' }) => (
+                {/* Readonly Account Number */}
+                {form.accountNumber && (
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">Account Number</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={form.accountNumber}
+                            readOnly
+                            disabled
+                        />
+                    </div>
+                )}
+
+                {/* Account Type Dropdown */}
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Account Type</label>
+                    <select
+                        name="accountType"
+                        value={form.accountType}
+                        onChange={handleChange}
+                        className="form-select"
+                        required
+                        disabled={loading}
+                    >
+                        <option value="">-- Select Account Type --</option>
+                        <option value="Saving">Saving</option>
+                        <option value="RD">Recurring Deposit (RD)</option>
+                        <option value="Fixed">Fixed Deposit (FD)</option>
+                    </select>
+                </div>
+
+                {/* Dynamic Form Fields */}
+                {[
+                    { name: 'branch', label: 'Branch' },
+                    { name: 'fatherOrHusbandName', label: 'Father/Husband Name' },
+                    { name: 'guardianName', label: 'Guardian Name' },
+                    { name: 'address.village', label: 'Village' },
+                    { name: 'address.post', label: 'Post' },
+                    { name: 'address.block', label: 'Block' },
+                    { name: 'address.district', label: 'District' },
+                    { name: 'address.pincode', label: 'Pincode' },
+                    { name: 'mobile', label: 'Mobile', type: 'tel' },
+                    { name: 'aadhar', label: 'Aadhar' },
+                    { name: 'depositAmount', label: 'Deposit Amount', type: 'number' },
+                    { name: 'formDate', label: 'Form Date', type: 'date' },
+                    { name: 'introducerName', label: 'Introducer Name' },
+                    { name: 'membershipNumber', label: 'Membership Number' },
+                ].map(({ name, label, type = 'text' }) => (
                     <div className="col-md-6 mb-3" key={name}>
                         <label className="form-label">{label}</label>
                         <input
@@ -205,7 +248,24 @@ const AccountDetailsTab = ({ userId, onNext }) => {
                         />
                     </div>
                 ))}
+
+                {/* Tenure only if RD selected */}
+                {form.accountType === 'RD' && (
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">Tenure (months)</label>
+                        <input
+                            type="number"
+                            name="tenure"
+                            value={form.tenure}
+                            onChange={handleChange}
+                            className="form-control"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
+                )}
             </div>
+
             <div className="text-end">
                 <button
                     type="button"

@@ -8,6 +8,7 @@ import {
 } from "../utils/response.js";
 import { createNewUser } from "../utils/userhelper.js";
 import { format } from 'fast-csv';
+import { notify } from "../utils/notify.js";
 
 // ✅ GET /users/profile
 export const getProfile = async (req, res) => {
@@ -104,6 +105,7 @@ export const createUser = async (req, res) => {
         }
 
         const user = await createNewUser({ name, email, password, roleId: role, phone, dob });
+        await notify(user._id, "New User Registered", `User ${user.name} has been created.`);
 
         return successResponse(res, 201, "User created successfully", user);
     } catch (err) {

@@ -10,7 +10,8 @@ const NomineeTab = ({ userId, onFinish }) => {
     const initialForm = {
         name: '',
         relation: '',
-        age: ''
+        age: '',
+        phone: ''
     };
 
     const [form, setForm] = useState(initialForm);
@@ -29,7 +30,8 @@ const NomineeTab = ({ userId, onFinish }) => {
                 setForm({
                     name: res.name || '',
                     relation: res.relation || '',
-                    age: res.age || ''
+                    age: res.age || '',
+                    phone: res.phone || ''
                 });
                 setExistingId(res._id);
             } else {
@@ -58,30 +60,48 @@ const NomineeTab = ({ userId, onFinish }) => {
         setExistingId(null);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!form.name || !form.relation || form.age === '') {
+    const validateForm = () => {
+        if (!form.name || !form.relation || form.age === '' || !form.phone) {
             toast.error('Please fill all fields');
-            return;
+            return false;
         }
 
         if (isNaN(form.age) || Number(form.age) <= 0) {
             toast.error('Age must be a positive number');
-            return;
+            return false;
         }
+
+        const cleanPhone = form.phone.replace(/\D/g, '');
+        if (!/^\d{10}$/.test(cleanPhone)) {
+            toast.error('Phone number must be 10 digits');
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm()) return;
 
         setLoading(true);
 
         try {
+            const payload = {
+                ...form,
+                phone: form.phone.replace(/\D/g, '')
+            };
+
             if (existingId) {
-                await updateNominee(existingId, form);
+                await updateNominee(existingId, payload);
                 toast.success('Nominee updated');
             } else {
-                await createNominee(userId, form);
+                await createNominee(userId, payload);
                 toast.success('Nominee created');
             }
-            if (onFinish) onFinish(); // Final step
+
+            if (onFinish) onFinish();
         } catch (err) {
             toast.error(err?.message || 'Failed to save nominee');
         } finally {
@@ -89,30 +109,77 @@ const NomineeTab = ({ userId, onFinish }) => {
         }
     };
 
-    const fields = [
-        { name: 'name', label: 'Nominee Name' },
-        { name: 'relation', label: 'Relation to Account Holder' },
-        { name: 'age', label: 'Nominee Age', type: 'number' }
+    const relationOptions = [
+        'Father',
+        'Mother',
+        'Brother',
+        'Sister',
+        'Spouse',
+        'Son',
+        'Daughter',
+        'Other'
     ];
 
     return (
         <form onSubmit={handleSubmit}>
             <div className="row">
-                {fields.map(({ name, label, type = 'text' }) => (
-                    <div className="col-md-6 mb-3" key={name}>
-                        <label className="form-label">{label}</label>
-                        <input
-                            type={type}
-                            name={name}
-                            value={form[name]}
-                            onChange={handleChange}
-                            className="form-control"
-                            required
-                            disabled={loading}
-                        />
-                    </div>
-                ))}
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Nominee Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Relation to Account Holder</label>
+                    <select
+                        name="relation"
+                        value={form.relation}
+                        onChange={handleChange}
+                        className="form-select"
+                        required
+                        disabled={loading}
+                    >
+                        <option value="">-- Select Relation --</option>
+                        {relationOptions.map((rel) => (
+                            <option key={rel} value={rel}>{rel}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Nominee Age</label>
+                    <input
+                        type="number"
+                        name="age"
+                        value={form.age}
+                        onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Nominee Phone</label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={loading}
+                    />
+                </div>
             </div>
+
             <div className="text-end">
                 <button
                     type="button"

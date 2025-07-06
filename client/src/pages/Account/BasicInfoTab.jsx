@@ -30,6 +30,12 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
         try {
             const data = await getRoles();
             setRoles(data);
+            if (!isEditMode) {
+                const userRole = data.find((role) => role.roleType.toLowerCase() === 'user');
+                if (userRole) {
+                    setForm((prev) => ({ ...prev, role: userRole._id }));
+                }
+            }
         } catch {
             toast.error('Failed to fetch roles');
         }
@@ -115,9 +121,8 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
     const generatePassword = () => {
         if (form.name && form.email && form.dob) {
             const [year, month, day] = form.dob.split('-');
-            const namePart = form.name.split(' ')[0] || '';
-            const emailUser = form.email.split('@')[0] || '';
-            const password = `${namePart}${emailUser}@${day}${month}`;
+            const namePart = form.name.split(' ')[0]?.toUpperCase() || '';
+            const password = `${namePart}@${day}${month}`;
             setForm({ ...form, password });
         } else {
             const randomPass = Math.random().toString(36).slice(-10);
@@ -188,12 +193,14 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Enter or generate password"
-                            readOnly={!isEditMode && !!form.password}
+                            readOnly={isEditMode}
+                            disabled={isEditMode}
                         />
                         <button
                             type="button"
                             className="btn btn-outline-secondary"
                             onClick={generatePassword}
+                            disabled={isEditMode}
                         >
                             Generate
                         </button>
@@ -232,6 +239,7 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
                         name="role"
                         value={form.role}
                         onChange={handleChange}
+                        disabled={!isEditMode}
                         required
                     >
                         <option value="">Select Role</option>
