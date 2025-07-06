@@ -1,0 +1,51 @@
+/* src/pages/Unauthorized.css */
+
+.unauth-container {
+  height: 100vh;
+  background-color: #041b24;
+  font-family: "DM Sans", sans-serif;
+  padding: 20px;
+}
+
+.unauth-box {
+  background-color: #031e35;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  max-width: 500px;
+  width: 100%;
+}
+
+.unauth-box .logo {
+  width: 70px;
+}
+
+.unauth-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #f76b1c;
+}
+
+.unauth-message {
+  font-size: 16px;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.btn-login {
+  background: linear-gradient(90deg, #f76b1c, #f76b1c);
+  color: white;
+  font-weight: bold;
+  height: 45px;
+  border-radius: 8px;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-login:hover {
+  background: linear-gradient(90deg, #ff854c, #ff854c);
+  color: white;
+}

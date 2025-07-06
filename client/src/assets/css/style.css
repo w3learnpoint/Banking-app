@@ -1,0 +1,1154 @@
+/* === THEME VARIABLE-BASED STYLING === */
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --primary-color: #00bcd4;
+  --secondary-color: #2825a4;
+  --hover-bg-color: #0c6084;
+  --hover-text-color: #ffffff;
+  --input-bg-color: #d9f4ff;
+  --input-text-color: #000000;
+  --border-color: #636681;
+  --scrollbar-thumb-color: #0f1527;
+  --scrollbar-hover-color: #ccc;
+  --link-color: #2825a4;
+  --placeholder-color: #4f4f8d;
+  --card-inner-bg: #ffffff;
+  --sidebar-bg-color: #f8f9fa;
+  --header-bg-color: #ffffff;
+  --sidebar-text-color: #000000;
+  --header-text-color: #000000;
+  --card-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #031e35;
+  --text-color: #d9f4ff;
+  --primary-color: #00cfe8;
+  --secondary-color: #2825a4;
+  --hover-bg-color: #0c6084;
+  --hover-text-color: #ffffff;
+  --input-bg-color: #0e0e3d;
+  --input-text-color: #ffffff;
+  --border-color: #3d3939;
+  --scrollbar-thumb-color: #0f1527;
+  --scrollbar-hover-color: #ccc;
+  --link-color: #a9d8ff;
+  --placeholder-color: #a3a3a3;
+  --card-inner-bg: #1f2023;
+  --sidebar-bg-color: #031e35;
+  --header-bg-color: #031e35;
+  --sidebar-text-color: #d9f4ff;
+  --header-text-color: #d9f4ff;
+  --card-bg: #111827;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+header.top-header {
+  padding: 9px 20px;
+  width: 100%;
+  left: 0;
+  position: fixed;
+  z-index: 50;
+  background-color: var(--header-bg-color);
+  color: var(--header-text-color);
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.bg-light-blue {
+  background-color: var(--secondary-color);
+}
+
+.theme-btn,
+.theme-btn-primary {
+  background-color: var(--primary-color) !important;
+  color: var(--text-color) !important;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-btn-secondary {
+  background-color: var(--text-color) !important;
+  color: var(--bg-color) !important;
+  border: 1px solid var(--text-color);
+}
+
+.theme-btn:hover,
+.theme-btn-secondary:hover {
+  opacity: 0.9;
+}
+
+.card,
+.card-box,
+.bg-dark2,
+.bg-info3 {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar ul.nav li.nav-item a {
+  color: var(--text-color);
+}
+
+.sidebar ul.nav li.nav-item a:hover,
+.sidebar ul.nav li.active a {
+  background-color: var(--primary-color);
+  color: #000;
+}
+
+ul.dropdown-menu {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+ul.dropdown-menu li a {
+  color: var(--text-color);
+  border-bottom: solid 1px var(--border-color);
+}
+
+.form-control,
+.search_input .form-control,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  background-color: var(--input-bg-color);
+  color: var(--input-text-color);
+  border-color: var(--border-color);
+}
+
+.form-control::placeholder,
+.search_input .form-control::placeholder {
+  color: var(--placeholder-color);
+}
+
+.table th,
+.table td {
+  color: var(--text-color);
+}
+
+.table thead tr th {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.btn,
+.btn_circle {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: 1px solid var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.btn:hover,
+.btn_circle:hover {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover-color);
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow
+  b {
+  border-color: var(--text-color) var(--text-color) transparent transparent !important;
+}
+
+ol.breadcrumb li.breadcrumb-item {
+  color: var(--text-color);
+}
+
+ol.breadcrumb li.breadcrumb-item a {
+  color: var(--link-color);
+}
+
+.card table.table tbody tr td figure {
+  background-color: var(--card-inner-bg);
+}
+
+.theme-dark,
+.bg_dark2,
+.bg-info2 {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+.main-area {
+  padding-top: 65px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+header.top-header .logo {
+  padding: 10px 0px;
+}
+.logo img {
+  max-width: 140px;
+}
+
+.top-navbar ul.nav li.dropdown .dropdown-toggle:after {
+  display: none;
+}
+.top-navbar ul.nav > li {
+  margin-left: 20px;
+}
+.user-dropdown .dropdown-toggle img {
+  width: 45px;
+  height: 45px;
+  display: block;
+  border-radius: 100px;
+}
+ul.dropdown-menu {
+  background-color: #000;
+  color: #fff;
+}
+
+ul.dropdown-menu li a {
+  color: #fff;
+  border-bottom: solid 1px #3d3939;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+}
+
+ul.dropdown-menu li:last-child a {
+  border-bottom: 0px;
+}
+/* === SIDEBAR + OWL SLIDER THEME-AWARE STYLES === */
+
+.sidebar {
+  overflow-y: scroll;
+  width: 249px;
+  padding: 15px 10px;
+  height: 91vh;
+  overflow-x: hidden;
+  position: fixed;
+  top: 65px;
+  border-right: solid 1px var(--border-color);
+  background-color: var(--sidebar-bg-color);
+  color: var(--sidebar-text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul.nav li.nav-item a {
+  color: var(--sidebar-text-color);
+  font-size: 16px;
+  padding: 10px 18px;
+  position: relative;
+  border-radius: 15px;
+  font-weight: 400;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul.nav li.nav-item a.nav-link i.fa-angle-right,
+.sidebar ul.nav li.nav-item a.nav-link i {
+  font-size: 16px;
+}
+
+.sidebar ul.nav li.nav-item a span.nav-link-text {
+  margin-left: 12px;
+}
+
+.sidebar ul.nav li.nav-item {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: solid 1px var(--border-color);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 2px;
+  border-radius: 12px;
+}
+
+.sidebar ul.nav li.nav-item ul {
+  list-style: none;
+  padding-left: 18px;
+}
+
+.sidebar ul.nav li.nav-item ul li a {
+  text-decoration: none;
+  color: var(--sidebar-text-color);
+  line-height: 1.3;
+  font-size: 14px;
+  display: block;
+  padding: 10px 12px;
+}
+
+.sidebar ul.nav li.nav-item ul li a.nav-link:hover,
+.sidebar ul.nav li.nav-item a:hover,
+.sidebar ul.nav li.active a {
+  background-color: var(--hover-bg-color);
+  color: var(--hover-text-color);
+}
+
+.sidebar ul.nav li.nav-item a.nav-link-collapse i.fa-angle-right {
+  transform: rotate(90deg);
+}
+
+.sidebar ul.nav li.nav-item a.nav-link-collapse.collapsed i.fa-angle-right {
+  transform: rotate(0deg);
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background-image: linear-gradient(
+    180deg,
+    var(--sidebar-bg-color),
+    var(--bg-color)
+  );
+  border-radius: 12px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+  width: 2px;
+  border-radius: 12px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover-color);
+}
+
+/* === Card / Slider === */
+.card-box {
+  padding: 20px;
+  position: relative;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.owl-slider-2 .owl-stage-outer {
+  padding-top: 42px;
+}
+
+.owl-slider-2 .owl-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.owl-slider-2 .owl-dots .owl-dot {
+  margin: 0px 4px;
+}
+
+.owl-slider-2 .owl-dots .owl-dot span {
+  width: 10px;
+  height: 10px;
+  display: block;
+  background-color: var(--text-color);
+  border-radius: 100px;
+}
+
+.owl-slider-2 .owl-dots .owl-dot.active span,
+.owl-slider-2 .owl-dots .owl-dot:hover span {
+  background-color: var(--primary-color);
+}
+
+.owl-slider-2 .card-box .card-top,
+.card-box .card-top {
+  margin-top: -60px;
+  margin-bottom: 6px;
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  position: relative;
+}
+
+.card-box .card-top figure {
+  margin-bottom: 0px;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.card-box .card-top figure img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-box .card-txt p {
+  margin-bottom: 5px;
+}
+
+/* === Colors === */
+.bg-info2 {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-dark2 {
+  background-color: var(--bg-color) !important;
+}
+
+.bg-info3 {
+  background: var(--primary-color, #00cfe829);
+}
+
+/* === Typography and Link Styling === */
+.order-tbl .md-txt ._srv_tym span,
+._srv_tym .border-end:after {
+  color: var(--placeholder-color);
+  background-color: var(--placeholder-color);
+}
+
+.order-tbl .md-txt h4 a,
+.order-tbl .md-txt h4 a:hover {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.order-tbl .md-txt ._tags {
+  color: var(--primary-color);
+  text-transform: uppercase;
+  font-size: 15px;
+  display: block;
+  line-height: 1;
+}
+
+.order-tbl ._price h4 {
+  color: var(--link-color);
+  text-align: right;
+}
+
+.list_items ul {
+  padding: 0;
+  list-style: none;
+}
+
+.list_items ul li {
+  margin-bottom: 10px;
+}
+
+.list_items ul li a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.nav_link,
+.nav_link a {
+  color: var(--link-color);
+  text-decoration: none;
+  margin: 0px 4px;
+}
+
+/* === THEME VARIABLE-BASED STYLING (EXTENSION) === */
+
+.up_layer {
+  position: relative;
+}
+
+.up_layer:after {
+  content: "";
+  width: 100%;
+  height: 40px;
+  background-color: var(--primary-color);
+  left: 0;
+  right: 0;
+  top: -40px;
+  z-index: 2;
+  display: block;
+  position: absolute;
+}
+
+.progress_txt small {
+  font-weight: 400;
+}
+
+.btn_circle {
+  position: relative;
+  border: solid 1px var(--hover-bg-color) !important;
+  color: var(--hover-bg-color) !important;
+  border-radius: 15px !important;
+  padding: 5px 10px !important;
+}
+
+.btn_circle:hover {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+.top-navbar ul.nav li.dropdown .dropdown-toggle .circle_txt {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  border: solid 3px var(--input-bg-color);
+  top: -6px;
+  right: -15px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 100px;
+}
+
+.status_row .d-flex .ms-3 {
+  line-height: 1.3;
+}
+
+.bg_dark2 {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+table.bg_dark2 thead tr th {
+  background-color: var(--secondary-color);
+  border-bottom-color: var(--input-bg-color) !important;
+}
+
+table.bg_dark2 tbody tr td {
+  border-bottom: 0px !important;
+}
+
+.aap_client {
+  position: relative;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.card table.table tbody tr td figure {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+  background-color: var(--card-inner-bg);
+}
+
+.aap_client .aap_client_pic figure {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 100px !important;
+  margin-bottom: 0;
+  padding: 0 !important;
+}
+
+.aap_client .aap_client_pic figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aap_client .aap_client_txt {
+  width: 280px;
+  position: relative;
+  padding-left: 10px;
+}
+
+.aap_client .aap_client_txt p {
+  color: var(--text-color);
+  margin-bottom: 0;
+  line-height: 1.3;
+  font-size: 17px;
+  font-family: sans-serif;
+}
+
+.form-control,
+.input_light .form-control,
+.search_input .form-control {
+  background-color: var(--input-bg-color);
+  border-color: var(--border-color);
+  color: var(--input-text-color);
+  padding: 8px 15px;
+  border-radius: 6px;
+}
+
+.search_input {
+  position: relative;
+  width: 80%;
+}
+
+.search_input .s_btn {
+  position: absolute;
+  background-color: transparent;
+  border: 0;
+  padding: 8px 12px;
+}
+
+.search_input .form-control::placeholder,
+.form-control::placeholder {
+  color: var(--placeholder-color);
+}
+
+table.p-3 thead tr th,
+table.p-3 tbody tr td {
+  padding: 14px 25px;
+}
+
+.form_row .form-control,
+.dropdown_lg .form-control,
+.dropdown_lg .idd_button,
+.dropdown_sm .form-control,
+.dropdown_sm .idd_button,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  background-color: var(--input-bg-color);
+  border: solid 2px var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow
+  b {
+  border-color: var(--placeholder-color) var(--placeholder-color) transparent
+    transparent !important;
+  border-width: 2px !important;
+  width: 14px !important;
+  height: 14px !important;
+  transform: rotate(135deg);
+  position: absolute;
+  top: 42% !important;
+  left: 0;
+  margin-left: -10px !important;
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered,
+ol.breadcrumb li.breadcrumb-item {
+  color: var(--text-color);
+}
+
+ol.breadcrumb li.breadcrumb-item a {
+  text-decoration: none;
+  color: var(--link-color);
+}
+
+.btn {
+  border-radius: 12px;
+}
+
+.border-bottom,
+.border-top {
+  border-color: var(--input-bg-color) !important;
+}
+
+.border-right {
+  height: 100%;
+  position: absolute;
+  right: 0;
+  width: 1px;
+  background-color: var(--input-bg-color);
+}
+
+.col-sm-3 {
+  position: relative;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
+  border: 1px solid var(--text-color) !important;
+  background: var(--text-color) !important;
+  color: var(--bg-color) !important;
+  text-align: center;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default,
+.ui-button,
+html .ui-button.ui-state-disabled:hover,
+html .ui-button.ui-state-disabled:active {
+  border: 0 solid var(--border-color) !important;
+}
+
+.ui-datepicker td span,
+.ui-datepicker td a {
+  text-align: center !important;
+}
+
+.ui-datepicker .ui-datepicker-header {
+  background-color: var(--bg-color);
+  border: 0;
+}
+
+.ui-datepicker .ui-datepicker-header a.ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-header a.ui-datepicker-next {
+  border: solid var(--text-color);
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  border-radius: 0;
+  width: 10px;
+  height: 10px;
+  top: 12px;
+}
+
+.ui-datepicker .ui-datepicker-header a.ui-datepicker-next {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.ui-datepicker .ui-datepicker-header a.ui-datepicker-prev {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.ui-datepicker .ui-datepicker-prev {
+  left: 15px !important;
+}
+
+.ui-datepicker .ui-datepicker-next {
+  right: 15px !important;
+}
+
+filegroup figure {
+  overflow: hidden;
+  border-radius: 100px;
+  width: 75px;
+  height: 75px;
+}
+
+filegroup figure img {
+  width: 100%;
+  height: 27px;
+  object-fit: cover;
+}
+
+.lbl_sm filegroup {
+  display: flex;
+  align-items: center;
+}
+
+.lbl_sm filegroup figure {
+  width: 25px;
+  height: 25px;
+  margin-bottom: 0;
+  margin-left: -5px;
+}
+
+.t_group_input .sort_by {
+  border: 0;
+  background-color: transparent;
+}
+
+/* === EXTENDED THEME-AWARE STYLING === */
+
+.t_group_input label {
+  opacity: 0.4;
+  margin-right: 10px;
+  color: var(--text-color);
+}
+
+.tbl_timeline table tbody tr,
+.sub_tbl .cell:last-child,
+.tbl_timeline table tbody tr td,
+.tbl_timeline thead tr th {
+  border-color: var(--input-bg-color);
+}
+
+.tbl_timeline table thead tr th,
+.tbl_timeline table tbody tr td {
+  color: var(--text-color);
+}
+
+.date_dark .ui-widget-content {
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+.date_dark .ui-widget-content .ui-datepicker-header,
+.date_dark .ui-datepicker .ui-datepicker-header a.ui-datepicker-prev,
+.date_dark .ui-datepicker .ui-datepicker-header a.ui-datepicker-next,
+.date_dark .ui-datepicker td a,
+.date_dark .ui-datepicker table thead tr th {
+  color: var(--text-color);
+  background-color: transparent;
+  border-color: var(--input-bg-color);
+}
+
+.date_dark table.ui-datepicker-calendar .ui-state-active,
+.date_dark table.ui-datepicker-calendar .ui-widget-content .ui-state-active {
+  background-color: var(--hover-bg-color) !important;
+  border: solid var(--input-bg-color) 1px !important;
+}
+
+.top-navbar ul.nav li a.btn_circle:hover,
+.sm_brdm ul.tablist li a.active,
+.sm_brdm ul.tablist li a:hover {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.top-navbar ul.nav li a.light_theme {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.country_list select.form-control {
+  background-image: url("data:image/svg+xml,%3Csvg fill='gray' viewBox='0 0 24 24' width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.col_logo figure img {
+  border: solid 4px var(--bg-color);
+}
+
+.col_logo figure span.fa {
+  border: solid 3px var(--border-color);
+  color: #12dc12;
+}
+
+.col_logo .lbl_logo_file label.logo_upload {
+  border: solid 2px var(--primary-color);
+  color: var(--text-color);
+}
+
+.card.theme-dark {
+  background-color: var(--bg-color);
+  border: solid 2px var(--border-color);
+  border-radius: 15px;
+}
+
+label {
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.qty input.form-control {
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border: solid 2px var(--hover-bg-color);
+}
+
+.qty span.up_num,
+.qty span.down_num {
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+.qty span.up_num:hover,
+.qty span.down_num:hover {
+  color: var(--primary-color);
+}
+
+.theme_modal .modal-dialog .modal-content {
+  background-color: var(--bg-color);
+  border: solid 2px var(--primary-color);
+  color: var(--text-color);
+}
+
+.select2-container--default .select2-selection--single {
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+}
+
+.sm_brdm ul.tablist {
+  background: var(--input-bg-color);
+  border: solid 1px var(--hover-bg-color);
+}
+
+.sm_brdm a {
+  color: var(--placeholder-color);
+}
+
+.ck-reset_all,
+.ck.ck-reset,
+.ck.ck-reset_all,
+.ck.ck-editor__main > .ck-editor__editable,
+.ck.ck-toolbar,
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
+.ck.ck-editor__editable_inline,
+.ck.ck-rounded-corners {
+  background: var(--input-bg-color) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+.form-control div#tags .tag,
+.form-control div#tags2 .tag {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.form-control div#tags .tag button,
+.form-control div#tags2 .tag button {
+  color: var(--bg-color);
+}
+
+label.switch .slider {
+  background-color: var(--border-color);
+}
+
+label.switch input:checked + .slider:before {
+  background-color: var(--primary-color);
+}
+
+.upload_box,
+.attach_box_sm .upload_box {
+  border: dashed 2px var(--border-color);
+  color: var(--text-color);
+}
+
+.upload_box .upload_icons img {
+  opacity: 0.5;
+}
+
+.upload_box p {
+  color: var(--placeholder-color);
+}
+
+.form-control.groomers_box .groomer_list .list_item_box {
+  border-bottom: solid 1px var(--border-color);
+}
+
+.bs4_check .checkmark {
+  background-color: var(--input-bg-color);
+}
+
+.bs4_check input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+}
+
+.form-control.groomers_box .groomer_list .apply_btn {
+  border-top: solid 1px var(--border-color);
+}
+
+.discount_row .input-group-prepend span.input-group-text {
+  color: var(--text-color);
+}
+
+.form_row .col-sm-2 select.form-control,
+select.form-control {
+  background-color: var(--input-bg-color);
+  background-image: url(down-arrow.png);
+  background-repeat: no-repeat;
+  background-position: center right 10px;
+}
+
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice__remove {
+  color: var(--placeholder-color);
+}
+
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__rendered
+  li {
+  list-style: none;
+}
+
+/* === THEME-COMPATIBLE STYLESHEET ENHANCEMENT (FINAL BATCH) === */
+
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  background-color: var(--input-bg-color) !important;
+  color: var(--text-color);
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark_box {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+
+.theme_box,
+.card,
+.card.theme-dark {
+  background-color: var(--bg-color);
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+}
+
+.btn_edit {
+  color: var(--primary-color);
+}
+
+.tabs_theme .btn {
+  color: var(--text-color);
+  border-bottom: solid 2px var(--border-color);
+}
+
+.tabs_theme .btn.active {
+  border-bottom-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.group_btn .group_sm_btn,
+.fc .fc-button-group {
+  background-color: var(--hover-bg-color);
+}
+
+.filters_group .date_input input,
+.form_sm select.form-control,
+.input_group_theme .form-control,
+div.dataTables_wrapper div.dataTables_filter input,
+div.dataTables_wrapper div.dataTables_length select,
+table.input_tbl tbody tr td input,
+table.input_tbl tbody tr td textarea,
+table.input_tbl tbody tr td select {
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.chat_users ul.list li:hover,
+.chating_box .chat_footer_area {
+  background-color: var(--hover-bg-color);
+}
+
+.chating_box .chat_footer_area .group_inputs label,
+.chating_box .chat_footer_area .group_inputs label button,
+.chat_header .msg_icon_group .search_area .form-control,
+.chatting_area .chat_txt_block label._date,
+.chatting_area .chat_txt_block .chat_left,
+.chatting_area .chat_txt_block .chat_right {
+  color: var(--text-color);
+}
+
+.chating_box .chat_footer_area .input-group input.msg {
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+}
+
+.chating_box .chat_footer_area .input-group button.btn {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.ck.ck-reset_all,
+.ck.ck-reset,
+.ck.ck-editor__main > .ck-editor__editable,
+.ck.ck-toolbar {
+  background-color: var(--input-bg-color) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+.ui-datepicker,
+.xdsoft_datetimepicker {
+  background-image: linear-gradient(
+    180deg,
+    var(--bg-color),
+    var(--hover-bg-color)
+  );
+  border: 2px solid var(--border-color) !important;
+  color: var(--text-color);
+}
+
+select.ui-datepicker-month,
+select.ui-datepicker-year {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--primary-color);
+}
+
+div.ui-datepicker .ui-widget-header {
+  background: transparent !important;
+  color: var(--text-color);
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default {
+  color: var(--primary-color) !important;
+}
+
+a.badge,
+a.badge:hover,
+.account_lists ul li a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.account_lists ul li {
+  border-bottom: solid 1px var(--border-color);
+}
+
+.input_group_theme button.btn {
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.chatting_area .chat_txt_block .chat_left,
+.chatting_area .chat_txt_block .chat_right {
+  background-color: var(--card-inner-bg);
+}
+
+ul.dropdown-menu,
+.dropdown div.dropdown-menu {
+  background-color: var(--input-bg-color);
+  border: solid 2px var(--border-color);
+}
+
+.dropdown.wdrp .dropdown-menu ul li {
+  border: 1px solid var(--border-color);
+}
+
+.edit_input_control i.fa-pen-to-square {
+  color: var(--placeholder-color);
+}
+
+.input_icon span._icon {
+  color: var(--placeholder-color);
+}
+
+.chatting_area .chat_txt_block .chat_right {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.floating_box .theme-dark {
+  background-color: var(--bg-color);
+}
+
+.close {
+  color: var(--text-color);
+}
+
+.tickets_box .card-header a.link_replay i.fa-angle-right {
+  color: var(--primary-color);
+}
+
+.accordion_box_1 .card-header a {
+  color: var(--text-color);
+}

@@ -1,0 +1,162 @@
+/* Base styles remain the same (you already have them) */
+.login-container {
+  height: 100vh;
+  background-color: #041b24;
+  font-family: "DM Sans", sans-serif;
+  padding: 20px;
+}
+
+.login-box {
+  max-width: 960px;
+  height: 80vh;
+  background-color: #031e35;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+}
+
+.left-side,
+.right-side {
+  width: 50%;
+  padding: 40px;
+}
+
+.left-side {
+  background-color: #041b24;
+  color: #fff;
+}
+
+.right-side {
+  background-color: #031e35;
+  color: #fff;
+}
+
+.logo {
+  width: 80px;
+}
+
+.brand-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.vertical-line {
+  position: absolute;
+  width: 2px;
+  height: 70%;
+  background-color: #ffffff50;
+  left: 50%;
+  top: 15%;
+  z-index: 2;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 350px;
+}
+
+.welcome-text {
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.subtext {
+  font-size: 14px;
+  text-align: center;
+  color: #ccc;
+}
+
+.custom-input {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  height: 45px;
+  font-size: 16px;
+  padding: 10px 15px;
+}
+
+.btn-login {
+  background: linear-gradient(90deg, #f76b1c, #f76b1c);
+  color: white;
+  font-weight: bold;
+  height: 45px;
+  border-radius: 8px;
+  border: none;
+}
+
+.btn-login:hover {
+  background: linear-gradient(90deg, #ff854c, #ff854c);
+}
+
+.forgot-link {
+  font-size: 14px;
+  color: #a9d8ff;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* === 📱 Responsive Enhancements === */
+@media (max-width: 992px) {
+  .login-box {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .left-side,
+  .right-side {
+    width: 100%;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  .form-box {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .vertical-line {
+    display: none;
+  }
+
+  .logo {
+    width: 60px;
+  }
+
+  .brand-text {
+    font-size: 20px;
+  }
+
+  .welcome-text {
+    font-size: 20px;
+  }
+
+  .btn-login {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-input {
+    font-size: 14px;
+    height: 40px;
+    padding: 8px 12px;
+  }
+
+  .btn-login {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .forgot-link {
+    font-size: 12px;
+  }
+}
