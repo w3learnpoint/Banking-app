@@ -105,6 +105,7 @@ const ViewAccount = () => {
                                     {renderCard('Name', nominee.name)}
                                     {renderCard('Relation', nominee.relation)}
                                     {renderCard('Age', nominee.age)}
+                                    {renderCard('Mobile', nominee.mobile)}
                                 </div>
                             ) : (
                                 <div className="text-muted">No nominee available.</div>
