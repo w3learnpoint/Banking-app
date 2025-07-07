@@ -128,7 +128,6 @@ const RoleManagement = () => {
                                                 setShow403Modal(true);
                                                 return;
                                             }
-                                            console.log(role)
                                             navigate(adminRoute(`/roles/view/${role?.roleType}`), {
                                                 state: { permissions: role?.permissions, roleName: role?.name }
                                             })

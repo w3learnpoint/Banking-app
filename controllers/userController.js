@@ -9,6 +9,8 @@ import {
 import { createNewUser } from "../utils/userhelper.js";
 import { format } from 'fast-csv';
 import { notify } from "../utils/notify.js";
+import path from 'path';
+import fs from 'fs';
 
 // ✅ GET /users/profile
 export const getProfile = async (req, res) => {
@@ -104,7 +106,8 @@ export const createUser = async (req, res) => {
             return badRequestResponse(res, 400, "Name, email, password, and role are required");
         }
 
-        const user = await createNewUser({ name, email, password, roleId: role, phone, dob });
+        const profilePic = req.file ? `/uploads/profilePics/${req.file.filename}` : null;
+        const user = await createNewUser({ name, email, password, roleId: role, phone, dob, profilePic });
         await notify(user._id, "New User Registered", `User ${user.name} has been created.`);
 
         return successResponse(res, 201, "User created successfully", user);
@@ -118,10 +121,19 @@ export const updateUser = async (req, res) => {
     try {
         const { userId } = req.params;
         const { name, email, phone, role, status, dob } = req.body;
+        let roleId = role;
+        if (typeof role === 'object' && role?._id) {
+            roleId = role._id;
+        }
+
+        const updateData = { name, email, phone, status, dob };
+        if (roleId) updateData.role = roleId;
+
+        if (req.file) updateData.profilePic = `/uploads/profilePics/${req.file.filename}`;
 
         const user = await User.findByIdAndUpdate(
             userId,
-            { name, email, phone, role, status, dob },
+            updateData,
             { new: true }
         );
 
@@ -129,7 +141,7 @@ export const updateUser = async (req, res) => {
 
         return successResponse(res, 200, "User updated successfully", user);
     } catch (err) {
-        console.log(err);
+        console.log(err)
         return errorResponse(res, 500, "Failed to update user", err.message);
     }
 };
@@ -231,5 +243,30 @@ export const exportUsersCsv = async (req, res) => {
     } catch (err) {
         console.error('CSV export error:', err);
         res.status(500).json({ success: false, message: 'Failed to export users.' });
+    }
+};
+
+// ✅ DELETE /users/:userId/profile-pic
+export const deleteProfilePic = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) return badRequestResponse(res, 400, "User ID is required");
+
+        const user = await User.findById(userId);
+        if (!user) return notFoundResponse(res, 404, "User not found");
+        if (!user.profilePic) return notFoundResponse(res, 404, "No profile picture to delete");
+
+        const filePath = path.resolve(`.${user.profilePic}`);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        user.profilePic = undefined;
+        await user.save();
+
+        return successResponse(res, 200, "Profile picture deleted successfully");
+    } catch (err) {
+        console.error("Delete profile picture error:", err);
+        return errorResponse(res, 500, "Failed to delete profile picture", err.message);
     }
 };

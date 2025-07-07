@@ -4,19 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "./assets/css/style.css";
-import "./assets/css/responsive.css"
-import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Bootstrap
-import "bootstrap/dist/js/bootstrap.bundle.min.js"; // ✅ Bootstrap JS
-import "@fortawesome/fontawesome-free/css/all.min.css"; // ✅ Font Awesome
+import "./assets/css/responsive.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { ProfileProvider } from './context/ProfileContext'; // ✅ Import provider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ProfileProvider> {/* ✅ Wrap App */}
+      <App />
+    </ProfileProvider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

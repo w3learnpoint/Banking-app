@@ -118,7 +118,6 @@ export const forgotPassword = async (req, res) => {
 
         return successResponse(res, 200, "Reset link sent to your email");
     } catch (err) {
-        console.log(err)
         return errorResponse(res, 500, "Failed to send reset link", err.message);
     }
 };
@@ -144,7 +143,6 @@ export const resetPassword = async (req, res) => {
 
         return successResponse(res, 200, "Password reset successfully");
     } catch (err) {
-        console.log(err?.message)
         return errorResponse(res, 500, "Failed to reset password", err.message);
     }
 };

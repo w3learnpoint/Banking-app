@@ -9,11 +9,13 @@ import {
     toggleUserStatus,
     getUserById,
     changePasswordUnified,
-    exportUsersCsv
+    exportUsersCsv,
+    deleteProfilePic
 } from "../controllers/userController.js";
 
 import { authenticateToken } from "../middleware/auth.js";
 import { authorize, autoRegisterPermission } from "../middleware/rbac.js";
+import { uploadProfilePic } from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -30,14 +32,15 @@ router.get("/email/:email", autoRegisterPermission, authorize(), getUserByEmail)
 router.get("/", autoRegisterPermission, authorize(), getAllUsers);
 
 // ❌ Mutating routes
-router.post("/", autoRegisterPermission, authorize(), createUser);
-router.put("/:userId", autoRegisterPermission, authorize(), updateUser);
+router.post("/", uploadProfilePic.single("profilePic"), autoRegisterPermission, authorize(), createUser);
+router.put("/:userId", uploadProfilePic.single("profilePic"), autoRegisterPermission, authorize(), updateUser);
 router.delete("/:userId", autoRegisterPermission, authorize(), deleteUser);
 router.patch("/:userId/status", autoRegisterPermission, authorize(), toggleUserStatus);
 
 // Password management
 router.patch("/change-password", autoRegisterPermission, authorize(), changePasswordUnified);
 router.post("/:userId/change-password", autoRegisterPermission, authorize(), changePasswordUnified);
+router.delete("/:userId/profile-pic", autoRegisterPermission, authorize(), deleteProfilePic);
 
 export default router;
 

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../assets/images/logo.png';
-import profile from '../assets/images/pic3.webp';
+import defaultAvatar from '../assets/images/pic3.webp';
 import { logout } from "../utils/auth";
 import { adminRoute } from "../utils/router";
 import { getUnreadNotifications, markAsRead } from "../api/notification";
 import { getUnreadMessages } from "../api/message";
 import { toast } from "react-toastify";
+import { useProfile } from "../context/ProfileContext";
 
 const AdminHeader = () => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [messages, setMessages] = useState([]);
+    const [profile, setProfile] = useProfile();
 
-    useEffect(() => {
+    useEffect((props) => {
         const fetchData = async () => {
             try {
                 const [notifRes, messageRes] = await Promise.all([
@@ -130,7 +132,17 @@ const AdminHeader = () => {
                         {/* User Profile */}
                         <div className="dropdown">
                             <button className="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown">
-                                <img src={profile} alt="user" className="profile-avatar" />
+                                <img
+                                    src={
+                                        profile?.profilePic
+                                            ? (profile.profilePic.startsWith('http')
+                                                ? profile.profilePic
+                                                : `${process.env.REACT_APP_API_URL}${profile.profilePic}`)
+                                            : defaultAvatar
+                                    }
+                                    alt="user"
+                                    className="profile-avatar"
+                                />
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end">
                                 <li><Link className="dropdown-item" to={adminRoute("/user-profile")}>Profile</Link></li>

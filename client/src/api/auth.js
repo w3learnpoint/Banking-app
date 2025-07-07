@@ -23,7 +23,6 @@ export const register = async (payload) => {
 // Forgot Password
 export const forgotPassword = async ({ email }) => {
     try {
-        console.log(email)
         const res = await API.post('/auth/forgot-password', { email });
         return res.data;
     } catch (err) {

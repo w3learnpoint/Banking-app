@@ -13,6 +13,18 @@ export const createUser = async (userData) => {
 };
 
 /**
+ * Delete Profile Picture
+ */
+export const deleteProfilePic = async (userId) => {
+    try {
+        const response = await API.delete(`/users/${userId}/profile-pic`);
+        return response.data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+};
+
+/**
  * Get paginated user list with optional filters
  */
 export const getUsers = async ({ page = 1, limit = 10, search = '', role = '' }) => {
@@ -36,7 +48,20 @@ export const getUsers = async ({ page = 1, limit = 10, search = '', role = '' })
  */
 export const updateUser = async (userId, userData) => {
     try {
-        const response = await API.put(`/users/${userId}`, userData);
+        const formData = new FormData();
+        for (const key in userData) {
+            if (key === 'profilePic' && userData[key] instanceof File) {
+                formData.append('profilePic', userData[key]);
+            } else {
+                formData.append(key, userData[key]);
+            }
+        }
+        const response = await API.put(`/users/${userId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
         return response.data.data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -68,7 +93,7 @@ export const getProfileByEmail = async (emailId) => {
 };
 
 /**
- * Get a user by user ID (separate from email-based call)
+ * Get a user by user ID
  */
 export const getUserById = async (userId) => {
     try {
@@ -82,14 +107,39 @@ export const getUserById = async (userId) => {
 /**
  * Update the profile of the logged-in user
  */
-export const updateProfile = async (profile) => {
+export const updateProfile = async (userId, profileData) => {
     try {
-        const res = await API.put(`/users/${profile._id}`, profile);
+        const formData = new FormData();
+        // Clone to avoid mutating original profileData
+        const clonedData = { ...profileData };
+
+        // Ensure role is a plain ID (string)
+        if (typeof clonedData.role === 'object' && clonedData.role?._id) {
+            clonedData.role = clonedData.role._id;
+        }
+
+        for (const key in clonedData) {
+            const value = clonedData[key];
+
+            if (key === 'profilePic' && value instanceof File) {
+                formData.append('profilePic', value);
+            } else if (value !== undefined && value !== null) {
+                formData.append(key, value);
+            }
+        }
+
+        const res = await API.put(`/users/${userId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
         return res.data.data;
     } catch (error) {
         throw error?.response?.data || error;
     }
 };
+
 
 /**
  * Change password for the logged-in user
@@ -105,8 +155,7 @@ export const changePassword = async (data) => {
     }
 };
 
-
-// Delete User
+// ✅ Delete a User
 export const deleteUser = async (userId) => {
     try {
         const res = await API.delete(`/users/${userId}`);
@@ -116,7 +165,7 @@ export const deleteUser = async (userId) => {
     }
 };
 
-// Admin change password for another user
+// ✅ Admin Change Password
 export const adminChangeUserPassword = async (userId, newPassword) => {
     try {
         const res = await API.post(`/users/${userId}/change-password`, { newPassword });
@@ -126,25 +175,24 @@ export const adminChangeUserPassword = async (userId, newPassword) => {
     }
 };
 
+// ✅ Export users to CSV
 export const downloadUserCsv = async () => {
     try {
         const response = await API.get('/users/export', {
-            responseType: 'blob', // Important!
+            responseType: 'blob',
         });
         return response.data;
     } catch (err) {
         if (err?.response?.data) {
             try {
-                // If it's a blob, extract text and parse error message
                 const text = await err.response.data.text();
                 const json = JSON.parse(text);
-                throw new Error(json?.message || 'Server error occurred while exporting roles');
+                throw new Error(json?.message || 'Server error occurred while exporting users');
             } catch (e) {
                 throw new Error(e?.message || 'Failed to export user');
             }
         }
 
-        // Fallback for other unexpected errors
         throw new Error(err?.message || 'Failed to export user');
     }
 };
