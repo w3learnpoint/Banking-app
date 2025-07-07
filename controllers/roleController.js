@@ -27,7 +27,6 @@ export const createRole = async (req, res) => {
         const role = await Role.create({ name, roleType, permissions, status });
         return successResponse(res, 201, "Role created", role);
     } catch (err) {
-        console.log(err)
         return errorResponse(res, 500, "Failed to create role", err.message);
     }
 };

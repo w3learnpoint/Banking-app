@@ -19,7 +19,6 @@ export const getUserSetting = async (req, res) => {
 
         return successResponse(res, 200, "Settings fetched successfully", setting);
     } catch (err) {
-        console.log(err)
         return errorResponse(res, 500, "Failed to fetch settings", err.message);
     }
 };

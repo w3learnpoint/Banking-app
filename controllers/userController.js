@@ -141,7 +141,6 @@ export const updateUser = async (req, res) => {
 
         return successResponse(res, 200, "User updated successfully", user);
     } catch (err) {
-        console.log(err)
         return errorResponse(res, 500, "Failed to update user", err.message);
     }
 };
