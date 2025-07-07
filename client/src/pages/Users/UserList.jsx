@@ -274,9 +274,9 @@ const UserList = () => {
                 confirmVariant="danger"
                 onConfirm={async () => {
                     try {
-                        toast.success('User deleted successfully.');
                         await deleteUser(deletingUser?._id);
                         await fetchUsers();
+                        toast.success('User deleted successfully.');
                     } catch (err) {
                         toast.error(err?.message);
                     }

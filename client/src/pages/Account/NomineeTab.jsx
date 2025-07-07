@@ -90,7 +90,7 @@ const NomineeTab = ({ userId, onFinish }) => {
         try {
             const payload = {
                 ...form,
-                phone: form.phone.replace(/\D/g, '')
+                mobile: form.phone.replace(/\D/g, '')
             };
 
             if (existingId) {

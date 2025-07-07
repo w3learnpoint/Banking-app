@@ -5,7 +5,11 @@ import API from './axios';
  */
 export const createUser = async (userData) => {
     try {
-        const response = await API.post('/users', userData);
+        const response = await API.post(`/users`, userData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data.data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -48,15 +52,7 @@ export const getUsers = async ({ page = 1, limit = 10, search = '', role = '' })
  */
 export const updateUser = async (userId, userData) => {
     try {
-        const formData = new FormData();
-        for (const key in userData) {
-            if (key === 'profilePic' && userData[key] instanceof File) {
-                formData.append('profilePic', userData[key]);
-            } else {
-                formData.append(key, userData[key]);
-            }
-        }
-        const response = await API.put(`/users/${userId}`, formData, {
+        const response = await API.put(`/users/${userId}`, userData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

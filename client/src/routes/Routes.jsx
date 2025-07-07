@@ -27,6 +27,7 @@ import MessageList from "../pages/Messages/MessageList";
 import Accounts from "../pages/Account/Accounts";
 import EditAccount from "../pages/Account/EditAccount";
 import ViewAccount from "../pages/Account/ViewAccount";
+import ImportAccounts from "../pages/Account/ImportAccounts";
 
 const AdminRoutes = () => {
     return (
@@ -77,6 +78,7 @@ const AdminRoutes = () => {
                 <Route path="account/create" element={<EditAccount />} />
                 <Route path="account/edit/:id" element={<EditAccount />} />
                 <Route path="account/view/:id" element={<ViewAccount />} />
+                <Route path="account/import" element={<ImportAccounts />} />
             </Route>
         </Routes>
     );

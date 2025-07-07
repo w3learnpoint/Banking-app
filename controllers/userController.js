@@ -11,6 +11,8 @@ import { format } from 'fast-csv';
 import { notify } from "../utils/notify.js";
 import path from 'path';
 import fs from 'fs';
+import AccountDetails from "../models/AccountDetails.js";
+import Nominee from "../models/Nominee.js";
 
 // ✅ GET /users/profile
 export const getProfile = async (req, res) => {
@@ -101,13 +103,26 @@ export const getUserByEmail = async (req, res) => {
 // ✅ POST /users
 export const createUser = async (req, res) => {
     try {
-        const { name, email, password, role, phone, dob } = req.body;
+        const { name, email, password, role, phone, dob, status = true } = req.body;
+
         if (!name || !email || !password || !role) {
             return badRequestResponse(res, 400, "Name, email, password, and role are required");
         }
 
-        const profilePic = req.file ? `/uploads/profilePics/${req.file.filename}` : null;
-        const user = await createNewUser({ name, email, password, roleId: role, phone, dob, profilePic });
+        const newUser = {
+            name,
+            email,
+            password,
+            phone,
+            dob,
+            status,
+            role,
+        };
+
+        if (req.file) {
+            newUser.profilePic = `/uploads/profilePics/${req.file.filename}`;
+        }
+        const user = await createNewUser(newUser);
         await notify(user._id, "New User Registered", `User ${user.name} has been created.`);
 
         return successResponse(res, 201, "User created successfully", user);
@@ -141,6 +156,8 @@ export const updateUser = async (req, res) => {
 
         return successResponse(res, 200, "User updated successfully", user);
     } catch (err) {
+        console.log(err)
+
         return errorResponse(res, 500, "Failed to update user", err.message);
     }
 };
@@ -150,6 +167,17 @@ export const deleteUser = async (req, res) => {
     try {
         const { userId } = req.params;
         if (!userId) return badRequestResponse(res, 400, "User ID is required");
+
+        // ✅ Check for associations
+        const accountExists = await AccountDetails.findOne({ user: userId });
+        if (accountExists) {
+            return badRequestResponse(res, 400, "Cannot delete: User has associated account details");
+        }
+
+        const nomineeExists = await Nominee.findOne({ user: userId });
+        if (nomineeExists) {
+            return badRequestResponse(res, 400, "Cannot delete: User has associated nominee details");
+        }
 
         const deleted = await User.findByIdAndDelete(userId);
         if (!deleted) return notFoundResponse(res, 404, "User not found");

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
-import { getUserById, updateUser, createUser } from '../../api/user.js';
+import { getUserById, updateUser, createUser, deleteProfilePic } from '../../api/user.js';
 import { getRoles } from '../../api/role';
 import { toast } from 'react-toastify';
 import { adminRoute } from '../../utils/router';
+import CommonModal from '../../components/common/CommonModal.jsx';
 
 const EditUser = () => {
     const { id } = useParams();
@@ -17,12 +18,16 @@ const EditUser = () => {
         phone: '',
         role: '',
         status: true,
-        password: ''
+        password: '',
+        dob: '',
     });
 
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [showDeletePicModal, setShowDeletePicModal] = useState(false);
 
     useEffect(() => {
         if (isEditMode) {
@@ -46,6 +51,8 @@ const EditUser = () => {
                 phone: user.phone || '',
                 role: user.role?._id || user.role || '',
                 status: user.status !== undefined ? user.status : true,
+                dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : '',
+                profilePic: user?.profilePic
             });
             setRoles(roleList || []);
         } catch (err) {
@@ -77,6 +84,7 @@ const EditUser = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (!form.name || !form.email || !form.role) {
             toast.error('All fields are required.');
             return;
@@ -89,8 +97,17 @@ const EditUser = () => {
 
         try {
             setSaving(true);
+            const formData = new FormData();
+            Object.entries(form).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+
+            if (selectedFile) {
+                formData.append('profilePic', selectedFile);
+            }
+
             if (isEditMode) {
-                await updateUser(id, form);
+                await updateUser(id, formData);
                 toast.success('User updated successfully');
             } else {
                 if (!form.password) {
@@ -98,9 +115,10 @@ const EditUser = () => {
                     setSaving(false);
                     return;
                 }
-                await createUser(form);
+                await createUser(formData);
                 toast.success('User created successfully');
             }
+
             navigate(adminRoute('/users'));
         } catch (err) {
             toast.error(err?.response?.data?.message || 'Failed to save user');
@@ -108,6 +126,7 @@ const EditUser = () => {
             setSaving(false);
         }
     };
+
 
     if (loading) {
         return (
@@ -126,6 +145,46 @@ const EditUser = () => {
                         {isEditMode ? 'Edit User' : 'Create User'}
                     </h4>
                     <form onSubmit={handleSubmit}>
+                        <div className="mb-4 text-center">
+                            <img
+                                src={
+                                    selectedFile
+                                        ? URL.createObjectURL(selectedFile)
+                                        : form.profilePic
+                                            ? (form.profilePic.startsWith('http') || form.profilePic.startsWith('blob:')
+                                                ? form.profilePic
+                                                : `${process.env.REACT_APP_API_URL}${form.profilePic}`)
+                                            : require('../../assets/images/pic3.webp')
+                                }
+                                alt="Profile Preview"
+                                className="rounded-circle shadow"
+                                style={{ width: 120, height: 120, objectFit: 'cover' }}
+                            />
+                            <div className="mt-2">
+                                <label className="btn btn-sm btn-outline-primary me-2">
+                                    Upload Photo
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        hidden
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) setSelectedFile(file);
+                                        }}
+                                    />
+                                </label>
+                                {form.profilePic && (
+                                    <button
+                                        type="button" // ✅ prevent form submit
+                                        className="btn btn-sm btn-outline-danger"
+                                        onClick={() => setShowDeletePicModal(true)}
+                                        disabled={uploading}
+                                    >
+                                        {uploading ? "Removing..." : "Remove"}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                         <div className="mb-3">
                             <label className="theme-label">Name</label>
                             <input
@@ -178,7 +237,16 @@ const EditUser = () => {
                                 placeholder="Enter phone number"
                             />
                         </div>
-
+                        <div className="mb-3">
+                            <label className="theme-label">Date of Birth</label>
+                            <input
+                                type="date"
+                                name="dob"
+                                value={form.dob}
+                                onChange={handleChange}
+                                className="form-control theme-input"
+                            />
+                        </div>
                         <div className="mb-3">
                             <label className="theme-label">Role</label>
                             <select
@@ -229,6 +297,30 @@ const EditUser = () => {
                     </form>
                 </div>
             </div>
+            <CommonModal
+                show={showDeletePicModal}
+                onHide={() => setShowDeletePicModal(false)}
+                title="Confirm Deletion"
+                type="confirm-delete"
+                emoji="🗑️"
+                itemName="profile picture"
+                confirmText="Delete"
+                confirmVariant="danger"
+                onConfirm={async () => {
+                    try {
+                        setUploading(true);
+                        await deleteProfilePic(id); // ✅ use the `id` from useParams
+                        toast.success('Profile picture deleted.');
+                        setForm(prev => ({ ...prev, profilePic: null })); // ✅ clear locally
+                    } catch (err) {
+                        toast.error(err?.message || 'Failed to delete image.');
+                    } finally {
+                        setUploading(false);
+                        setShowDeletePicModal(false);
+                    }
+                }}
+            />
+
         </div>
     );
 };

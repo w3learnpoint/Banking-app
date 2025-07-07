@@ -132,7 +132,7 @@ const Profile = () => {
         if (file) {
             setSelectedFile(file);
             const previewURL = URL.createObjectURL(file);
-            // setProfile(prev => ({ ...prev, profilePic: previewURL }));
+            setProfile(prev => ({ ...prev, profilePic: previewURL }));
         }
     };
 

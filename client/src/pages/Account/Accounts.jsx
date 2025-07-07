@@ -92,6 +92,35 @@ const Accounts = () => {
                         </div>
                         <div>
                             <button
+                                className="btn btn-sm btn-outline-success"
+                                onClick={() => {
+                                    const link = document.createElement('a');
+                                    link.href = `/sample-templates/account-import-template.csv`;
+                                    link.download = 'account-import-template.xlsx';
+                                    link.click();
+                                }}
+                            >
+                                📥 Download Template
+                            </button>
+                        </div>
+
+                        {/* NEW BUTTON: Import Accounts */}
+                        <div>
+                            <button
+                                className="btn btn-sm btn-outline-primary"
+                                onClick={() => {
+                                    if (!hasPermission(userPermissions, 'POST:/accounts')) {
+                                        setShow403Modal(true);
+                                        return;
+                                    }
+                                    navigate(adminRoute('/account/import'));
+                                }}
+                            >
+                                📤 Import
+                            </button>
+                        </div>
+                        <div>
+                            <button
                                 className="btn btn-md btn-primary"
                                 onClick={() => {
                                     if (!hasPermission(userPermissions, 'POST:/accounts')) {

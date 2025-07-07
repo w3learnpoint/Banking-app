@@ -15,7 +15,7 @@ export const createNominee = async (req, res) => {
             return badRequestResponse(res, 400, "User, name, relation, and age are required");
         }
 
-        const nominee = await Nominee.create({ user, name, relation, age });
+        const nominee = await Nominee.create({ user, name, relation, age, mobile });
 
         return successResponse(res, 201, "Nominee created successfully", nominee);
     } catch (err) {
