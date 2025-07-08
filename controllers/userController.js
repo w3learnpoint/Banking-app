@@ -24,6 +24,7 @@ export const getProfile = async (req, res) => {
             name: user.name,
             email: user.email,
             phone: user.phone,
+            gender: user.gender,
             dob: user.dob,
             role: user.role?.name,
             loginHistory: user.loginHistory
@@ -103,7 +104,7 @@ export const getUserByEmail = async (req, res) => {
 // ✅ POST /users
 export const createUser = async (req, res) => {
     try {
-        const { name, email, password, role, phone, dob, status = true } = req.body;
+        const { name, email, password, gender, role, phone, dob, status = true } = req.body;
 
         if (!name || !email || !password || !role) {
             return badRequestResponse(res, 400, "Name, email, password, and role are required");
@@ -112,7 +113,8 @@ export const createUser = async (req, res) => {
         const newUser = {
             name,
             email,
-            password,
+            gender,
+            password: await bcrypt.hash(password, 10),
             phone,
             dob,
             status,
@@ -135,13 +137,13 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { userId } = req.params;
-        const { name, email, phone, role, status, dob } = req.body;
+        const { name, email, phone, role, status, dob, gender } = req.body;
         let roleId = role;
         if (typeof role === 'object' && role?._id) {
             roleId = role._id;
         }
 
-        const updateData = { name, email, phone, status, dob };
+        const updateData = { name, email, phone, status, dob, gender };
         if (roleId) updateData.role = roleId;
 
         if (req.file) updateData.profilePic = `/uploads/profilePics/${req.file.filename}`;
@@ -156,8 +158,6 @@ export const updateUser = async (req, res) => {
 
         return successResponse(res, 200, "User updated successfully", user);
     } catch (err) {
-        console.log(err)
-
         return errorResponse(res, 500, "Failed to update user", err.message);
     }
 };

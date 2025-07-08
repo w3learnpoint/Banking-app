@@ -19,24 +19,34 @@ const isEmpty = value => !value || value.trim() === "";
 
 export const register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, gender, dob, phone } = req.body;
 
-        if (!name || !email || !password) {
+        if (!name || !email || !password || !gender || !dob || !phone) {
             return badRequestResponse(res, 400, "Name, email, and password are required");
         }
 
-        let role = await Role.findOne({ name: "Viewer" });
+        let role = await Role.findOne({ name: "User" });
 
         if (!role) {
             const viewPermissions = await Permission.find({ method: "GET" });
             role = await Role.create({
-                name: "Viewer",
-                roleType: "viewer",
+                name: "User",
+                roleType: "User",
                 permissions: viewPermissions.map(p => p._id)
             });
         }
 
-        const user = await createNewUser({ name, email, password, roleId: role._id });
+        const newUser = {
+            name,
+            email,
+            password,
+            gender,
+            dob,
+            phone,
+            role: role._id
+        }
+
+        const user = await createNewUser(newUser);
 
         return successResponse(res, 201, "User registered successfully", {
             name: user.name,
@@ -80,6 +90,7 @@ export const login = async (req, res) => {
             }
         });
     } catch (err) {
+        console.error("Login error:", err);
         return errorResponse(res, 500, "Login failed", err.message);
     }
 };

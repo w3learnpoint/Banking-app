@@ -17,6 +17,11 @@ const userSchema = new Schema(
             type: String,
             trim: true
         },
+        gender: {
+            type: String,
+            enum: ['Male', 'Female', 'Other'],
+            required: false
+        },
         dob: Date,
         googleId: String,
         role: { type: Schema.Types.ObjectId, ref: "Role" },

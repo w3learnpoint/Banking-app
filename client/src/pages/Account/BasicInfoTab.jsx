@@ -13,6 +13,7 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
         email: '',
         password: '',
         phone: '',
+        gender: '',
         dob: '',
         role: '',
         status: true
@@ -49,6 +50,7 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
                 name: user.name || '',
                 email: user.email || '',
                 phone: user.phone || '',
+                gender: user.gender || '',
                 dob: user.dob ? new Date(user.dob).toISOString().substr(0, 10) : '',
                 status: user.status !== false,
                 password: '',
@@ -170,6 +172,23 @@ const BasicInfoTab = ({ onNext, setUserId }) => {
                         className="form-control"
                         placeholder="e.g. 98765 43210"
                     />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Gender</label>
+                    <select
+                        className="form-select"
+                        name="gender"
+                        value={form.gender}
+                        onChange={(e) =>
+                            setForm({ ...form, gender: e.target.value })
+                        }
+                        required
+                    >
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
 
                 <div className="col-md-6 mb-3">

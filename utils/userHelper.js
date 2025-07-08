@@ -6,9 +6,11 @@ export const createNewUser = async ({
     name,
     email,
     password,
+    gender,
     phone,
     dob,
-    role, profilePic
+    role,
+    profilePic
 }) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -21,6 +23,7 @@ export const createNewUser = async ({
         name,
         email,
         phone,
+        gender,
         dob,
         password: hashedPassword,
         role: role,

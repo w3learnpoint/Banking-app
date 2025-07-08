@@ -16,6 +16,7 @@ const EditUser = () => {
         name: '',
         email: '',
         phone: '',
+        gender: '',
         role: '',
         status: true,
         password: '',
@@ -49,6 +50,7 @@ const EditUser = () => {
                 name: user.name || '',
                 email: user.email || '',
                 phone: user.phone || '',
+                gender: user.gender || '',
                 role: user.role?._id || user.role || '',
                 status: user.status !== undefined ? user.status : true,
                 dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : '',
@@ -246,6 +248,20 @@ const EditUser = () => {
                                 onChange={handleChange}
                                 className="form-control theme-input"
                             />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Gender</label>
+                            <select
+                                className="form-select"
+                                name="gender"
+                                value={form.gender}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                         <div className="mb-3">
                             <label className="theme-label">Role</label>
