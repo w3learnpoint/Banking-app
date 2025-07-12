@@ -5,7 +5,7 @@ const AdminFooter = () => {
         <footer className="admin-footer text-center py-3 mt-auto">
             <div className="container">
                 <small>
-                    © {new Date().getFullYear()} Petconnect. All rights reserved.
+                    © {new Date().getFullYear()} Copyrights. All rights reserved.
                 </small>
             </div>
         </footer>

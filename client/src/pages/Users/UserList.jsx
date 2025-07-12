@@ -17,7 +17,7 @@ const UserList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [deletingUser, setDeletingUser] = useState(null);
-    const usersPerPage = 5;
+    const usersPerPage = 10;
     const currentUserEmail = JSON.parse(localStorage.getItem('user'))?.email;
     const [sortField, setSortField] = useState('name');
     const [sortOrder, setSortOrder] = useState('asc');

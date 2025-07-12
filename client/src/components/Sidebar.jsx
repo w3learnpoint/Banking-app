@@ -15,20 +15,6 @@ const Sidebar = () => {
                                 </Link >
                             </li>
 
-                            <li className="nav-item" data-toggle="tooltip" data-placement="right" title="CRM">
-                                <Link className="nav-link" to={adminRoute('/roles')}>
-                                    <i className="fa-solid fa-user-secret"></i>
-                                    <span className="nav-link-text">Roles</span>
-                                </Link >
-                            </li>
-
-                            <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
-                                <Link className="nav-link" to={adminRoute('/permissions')}>
-                                    <i className="fa-solid fa-user-lock"></i>
-                                    <span className="nav-link-text">Permissions</span>
-                                </Link >
-                            </li>
-
                             <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
                                 <Link className="nav-link" to={adminRoute('/users')}>
                                     <i className="fa-solid fa-users"></i>
@@ -38,32 +24,51 @@ const Sidebar = () => {
 
                             <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
                                 <Link className="nav-link" to={adminRoute('/accounts')}>
-                                    <i className="fa-solid fa-building-columns"></i>
+                                    <i className="fa-solid fa-landmark"></i>
                                     <span className="nav-link-text">Accounts</span>
                                 </Link >
                             </li>
 
                             <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
-                                <Link className="nav-link" to={adminRoute('/pages')}>
-                                    <i className="fa-solid fa-file-word"></i>
-                                    <span className="nav-link-text">Pages</span>
+                                <Link className="nav-link" to={adminRoute('/opening-balance')}>
+                                    <i className="fa-solid fa-clipboard"></i>
+                                    <span className="nav-link-text">Opening Balance</span>
                                 </Link >
                             </li>
 
                             <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
-                                <Link className="nav-link" to={adminRoute('/notifications')}>
-                                    <i className="fa-solid fa-bell"></i>
-                                    <span className="nav-link-text">Notifications</span>
+                                <Link className="nav-link" to={adminRoute('/closing-balance')}>
+                                    <i className="fa-solid fa-circle-exclamation"></i>
+                                    <span className="nav-link-text">Closing Balance</span>
                                 </Link >
                             </li>
 
                             <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
-                                <Link className="nav-link" to={adminRoute('/messages')}>
-                                    <i className="fa-solid fa-message"></i>
-                                    <span className="nav-link-text">Messages</span>
+                                <Link className="nav-link" to={adminRoute('/ledger')}>
+                                    <i className="fa-solid fa-book"></i>
+                                    <span className="nav-link-text">Ledger</span>
                                 </Link >
                             </li>
 
+                            <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
+                                <Link className="nav-link" to={adminRoute('/daily-expenses')}>
+                                    <i className="fa-solid fa-chart-pie"></i>
+                                    <span className="nav-link-text">Daily Expenses</span>
+                                </Link >
+                            </li>
+
+                            <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
+                                <Link className="nav-link" to={adminRoute('/assets')}>
+                                    <i className="fa-solid fa-square-poll-vertical"></i>
+                                    <span className="nav-link-text">Assets</span>
+                                </Link >
+                            </li>
+                            <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
+                                <Link className="nav-link" to={adminRoute('/reports')}>
+                                    <i className="fa-solid fa-folder"></i>
+                                    <span className="nav-link-text">Reports</span>
+                                </Link >
+                            </li>
                         </ul>
                     </div>
                 </div>

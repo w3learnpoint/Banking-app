@@ -16,7 +16,7 @@ const EditUser = () => {
         name: '',
         email: '',
         phone: '',
-        gender: '',
+        gender̀: '',
         role: '',
         status: true,
         password: '',
@@ -188,7 +188,7 @@ const EditUser = () => {
                             </div>
                         </div>
                         <div className="mb-3">
-                            <label className="theme-label">Name</label>
+                            <label className="theme-label text-black">Name</label>
                             <input
                                 type="text"
                                 name="name"
@@ -201,7 +201,7 @@ const EditUser = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label className="theme-label">Email</label>
+                            <label className="theme-label text-black">Email</label>
                             <input
                                 type="email"
                                 name="email"
@@ -215,7 +215,7 @@ const EditUser = () => {
 
                         {!isEditMode && (
                             <div className="mb-3">
-                                <label className="theme-label">Password</label>
+                                <label className="theme-label text-black">Password</label>
                                 <input
                                     type="password"
                                     name="password"
@@ -229,7 +229,7 @@ const EditUser = () => {
                         )}
 
                         <div className="mb-3">
-                            <label className="theme-label">Phone</label>
+                            <label className="theme-label text-black">Phone</label>
                             <input
                                 type="text"
                                 name="phone"
@@ -240,7 +240,7 @@ const EditUser = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="theme-label">Date of Birth</label>
+                            <label className="theme-label text-black">Date of Birth</label>
                             <input
                                 type="date"
                                 name="dob"
@@ -250,7 +250,7 @@ const EditUser = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">Gender</label>
+                            <label className="form-label text-black">Gender</label>
                             <select
                                 className="form-select"
                                 name="gender"
@@ -264,7 +264,7 @@ const EditUser = () => {
                             </select>
                         </div>
                         <div className="mb-3">
-                            <label className="theme-label">Role</label>
+                            <label className="theme-label text-black">Role</label>
                             <select
                                 name="role"
                                 value={form.role}
@@ -282,7 +282,7 @@ const EditUser = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label className="theme-label">Status</label>
+                            <label className="theme-label text-black">Status</label>
                             <select
                                 name="status"
                                 value={form.status ? 'true' : 'false'}
