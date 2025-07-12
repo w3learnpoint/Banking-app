@@ -21,18 +21,10 @@ export const getLedgerById = async (ledgerId) => {
 };
 
 // 🔹 Admin: Get all ledger entries (paginated + optional filters)
-export const getAllLedgers = async ({
-    page = 1,
-    limit = 10,
-    search = '',
-    transactionType = ''
-} = {}) => {
+export const getAllLedgers = async (params) => {
     try {
-        const res = await API.get('/ledger', {
-            params: { page, limit, search, transactionType }
-        });
-        console.log(res?.data?.data)
-        return res?.data?.data;
+        const res = await API.get('/ledger', { params });
+        return res.data.data;
     } catch (err) {
         throw new Error(err?.response?.data?.message || 'Failed to fetch ledger entries');
     }

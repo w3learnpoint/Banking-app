@@ -30,16 +30,9 @@ const Sidebar = () => {
                             </li>
 
                             <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
-                                <Link className="nav-link" to={adminRoute('/opening-balance')}>
+                                <Link className="nav-link" to={adminRoute('/transactions')}>
                                     <i className="fa-solid fa-clipboard"></i>
-                                    <span className="nav-link-text">Opening Balance</span>
-                                </Link >
-                            </li>
-
-                            <li className="nav-item" data-toggle="tooltip" data-placement="right" title="Business">
-                                <Link className="nav-link" to={adminRoute('/closing-balance')}>
-                                    <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span className="nav-link-text">Closing Balance</span>
+                                    <span className="nav-link-text">Transactions</span>
                                 </Link >
                             </li>
 

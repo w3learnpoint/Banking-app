@@ -6,12 +6,14 @@ import {
     getAllLedgers,
     deleteLedger,
     importLedgerFromCSV,
+    getOverallFinancialSummary,
 } from "../controllers/ledgerController.js";
 
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
 router.post("/", upsertLedger);
+router.get("/summary", getOverallFinancialSummary);
 router.get("/:ledgerId", getLedger);
 router.get("/", getAllLedgers);
 router.delete("/:ledgerId", deleteLedger);
