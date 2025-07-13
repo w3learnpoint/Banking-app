@@ -21,6 +21,8 @@ import CreateAccounts from "../pages/Account/CreateOrEditAccounts";
 import Ledger from "../pages/Ledger/Ledger";
 import CreateOrEditLedger from "../pages/Ledger/CreateOrEditLedger";
 import LedgerSummary from "../pages/Ledger/LadgerSummary";
+import Deposit from "../pages/Deposit/Deposit";
+
 
 const AdminRoutes = () => {
     return (
@@ -60,6 +62,8 @@ const AdminRoutes = () => {
                 <Route path="ledger/create" element={<CreateOrEditLedger />} />
                 <Route path="ledger/edit/:id" element={<CreateOrEditLedger />} />
                 <Route path="ledger/particular/:particular" element={<LedgerSummary />} />
+
+                <Route path="deposit" element={<Deposit />} />
 
                 <Route path="user-settings" element={<Setting />} />
             </Route>
