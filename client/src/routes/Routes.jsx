@@ -21,6 +21,11 @@ import CreateAccounts from "../pages/Account/CreateOrEditAccounts";
 import Ledger from "../pages/Ledger/Ledger";
 import CreateOrEditLedger from "../pages/Ledger/CreateOrEditLedger";
 import LedgerSummary from "../pages/Ledger/LadgerSummary";
+import Deposit from "../pages/Deposit/Deposit";
+
+import CreateTransaction from "../pages/Transaction/CreateTransaction";
+import InterestTrigger from "../pages/InterestRate/InterestRate";
+import Transactions from "../pages/Transaction/Transactions";
 
 const AdminRoutes = () => {
     return (
@@ -60,6 +65,13 @@ const AdminRoutes = () => {
                 <Route path="ledger/create" element={<CreateOrEditLedger />} />
                 <Route path="ledger/edit/:id" element={<CreateOrEditLedger />} />
                 <Route path="ledger/particular/:particular" element={<LedgerSummary />} />
+
+                <Route path="deposit" element={<Deposit />} />
+                <Route path="transactions" element={<Transactions />} />
+                <Route path="transaction/create" element={<CreateTransaction />} />
+
+
+                <Route path="interest-management" element={<InterestTrigger />} />
 
                 <Route path="user-settings" element={<Setting />} />
             </Route>
