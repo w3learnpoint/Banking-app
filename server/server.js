@@ -5,6 +5,7 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import path from "path";
+import cron from 'node-cron';
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +28,9 @@ import notificationRoutes from "./routes/notificationsRoutes.js";
 import messageRoutes from "./routes/messagesRoutes.js";
 import accountRoutes from "./routes/accountRoutes.js";
 import ledgerRoutes from "./routes/ledgerRoutes.js";
+import transactionRoutes from "./routes/transactionRoutes.js";
+import interestRoutes from './routes/interestRoutes.js';
+import { applyInterestToAllAccounts } from "./utils/interestService.js";
 
 // Initialize app
 const app = express();
@@ -93,6 +97,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/ledger", ledgerRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use('/api/interest', interestRoutes);
 
 // ✅ Test Email Route
 app.get('/api/test-email', async (req, res) => {
@@ -114,6 +120,17 @@ app.all("/api/*", (req, res) => {
     res.status(404).json({ message: "API route not found." });
 });
 
+
+// cron.js or server.js
+cron.schedule('0 0 1 * *', async () => {
+    console.log('✅ Running monthly interest task...');
+    try {
+        const result = await applyInterestToAllAccounts();
+        console.log(`✔️ Interest applied to ${result.appliedTo} accounts`);
+    } catch (err) {
+        console.error('❌ Interest cron failed:', err.message);
+    }
+});
 // ====================
 // ✅ Start Server
 // ====================

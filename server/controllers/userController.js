@@ -11,7 +11,6 @@ import { format } from 'fast-csv';
 import { notify } from "../utils/notify.js";
 import path from 'path';
 import fs from 'fs';
-import Nominee from "../models/Nominee.js";
 
 // ✅ GET /users/profile
 export const getProfile = async (req, res) => {
@@ -166,11 +165,6 @@ export const deleteUser = async (req, res) => {
     try {
         const { userId } = req.params;
         if (!userId) return badRequestResponse(res, 400, "User ID is required");
-
-        const nomineeExists = await Nominee.findOne({ user: userId });
-        if (nomineeExists) {
-            return badRequestResponse(res, 400, "Cannot delete: User has associated nominee details");
-        }
 
         const deleted = await User.findByIdAndDelete(userId);
         if (!deleted) return notFoundResponse(res, 404, "User not found");

@@ -58,11 +58,12 @@ const ViewAccount = () => {
                             {renderCard('Branch', account.branch)}
                             {renderCard('Aadhar', account.aadhar)}
                             {renderCard('Father/Husband Name', account.fatherOrHusbandName)}
-                            {renderCard('Guardian Name', account.relation)}
+                            {renderCard('Relation', account.relation)}
                             {renderCard('Mobile', account.phone)}
                             {renderCard('Membership Number', account.membershipNumber)}
                             {renderCard('Introducer Name', account.introducerName)}
-                            {renderCard('Deposit Amount', `₹${account.depositAmount}`)}
+                            {renderCard('Deposited Amount', `₹${account.depositAmount}`)}
+                            {renderCard('Total Amount', `₹${account.balance}`)}
                             {renderCard('Account Type', account.accountType)}
                             {renderCard('Form Date', account.formDate ? new Date(account.formDate).toLocaleDateString() : '-')}
                             {renderCard('Account Open Date', account.accountOpenDate ? new Date(account.accountOpenDate).toLocaleDateString() : '-')}

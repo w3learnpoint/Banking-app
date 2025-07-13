@@ -73,6 +73,7 @@ export const importAccountsFromCSV = async (formData) => {
         });
         return res?.data?.data;
     } catch (err) {
+        console.log(err)
         throw new Error(err?.response?.data?.message || 'CSV import failed');
     }
 };

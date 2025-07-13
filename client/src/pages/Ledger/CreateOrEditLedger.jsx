@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { adminRoute } from '../../utils/router';
 
-const transactionTypes = ['debit', 'credit', 'balance'];
+const transactionTypes = ['debit', 'credit'];
 
 const initialParticulars = [
     'Office Equipment',
@@ -177,7 +177,7 @@ const CreateOrEditLedger = () => {
                             />
                         </div>
 
-                        <div className="col-md-4 mb-3">
+                        {/* <div className="col-md-4 mb-3">
                             <label className='theme-label text-black'>Balance ($)</label>
                             <input
                                 type="number"
@@ -186,7 +186,7 @@ const CreateOrEditLedger = () => {
                                 onChange={handleChange}
                                 className="form-control"
                             />
-                        </div>
+                        </div> */}
 
                         <div className="col-md-8 mb-3">
                             <label className='theme-label text-black'>Description</label>

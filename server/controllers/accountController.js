@@ -1,6 +1,7 @@
 import fs from "fs";
 import csv from "csv-parser";
 import Account from "../models/Account.js";
+import Transaction from "../models/Transaction.js";
 import { notify } from "../utils/notify.js";
 import {
     successResponse,
@@ -8,13 +9,14 @@ import {
     badRequestResponse,
     notFoundResponse
 } from "../utils/response.js";
+import { createTransactionAndLedger } from "../utils/accountLedger.js";
 
 const withFullUrl = (path, baseUrl) => {
     if (!path) return null;
     return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
 };
 
-const generateNextAccountNumber = async () => {
+export const generateNextAccountNumber = async () => {
     const last = await Account.findOne().sort({ accountNumber: -1 }).lean();
     return last?.accountNumber ? String(Number(last.accountNumber) + 1) : '10500801';
 };
@@ -46,7 +48,7 @@ export const upsertAccount = async (req, res) => {
 
         const payload = {
             accountType,
-            tenure,
+            tenure: isNaN(parseInt(row.tenure)) ? null : parseInt(row.tenure),
             branch,
             applicantName,
             gender,
@@ -88,7 +90,23 @@ export const upsertAccount = async (req, res) => {
         if (accId) {
             account = await Account.findByIdAndUpdate(accId, payload, { new: true });
         } else {
+            payload.balance = payload.depositAmount;
             account = await Account.create(payload);
+            await Transaction.create({
+                accountId: account._id,
+                type: 'deposit',
+                amount: payload.depositAmount,
+                description: 'Initial deposit',
+                date: payload.accountOpenDate || new Date(),
+            });
+            await createTransactionAndLedger({
+                account,
+                type: 'deposit',
+                amount: payload.depositAmount,
+                description: 'Initial deposit',
+                date: payload.accountOpenDate || new Date(),
+                createdBy: req.user?.name || 'System'
+            });
             await notify(req.user || {}, "Account Created", `Account #${payload.accountNumber} created`);
         }
 
@@ -120,7 +138,6 @@ export const getAccount = async (req, res) => {
         return errorResponse(res, 500, "Failed to fetch account details", err.message);
     }
 };
-
 
 // ✅ DELETE Account Details by User ID
 export const deleteAccount = async (req, res) => {
@@ -163,7 +180,7 @@ export const getAllAccounts = async (req, res) => {
         const total = await Account.countDocuments(query);
 
         const accounts = await Account.find(query)
-            .sort({ createdAt: -1 })
+            .sort({ updatedAt: -1 }) // 🔄 updated here
             .skip((page - 1) * limit)
             .limit(limit);
 
@@ -174,11 +191,9 @@ export const getAllAccounts = async (req, res) => {
             totalAccounts: total,
         });
     } catch (err) {
-        console.error(err);
         return errorResponse(res, 500, "Failed to fetch accounts", err.message);
     }
 };
-
 
 // ✅ Import Accounts from CSV
 export const importAccountsFromCSV = async (req, res) => {
@@ -215,15 +230,16 @@ export const importAccountsFromCSV = async (req, res) => {
 
                 const payload = {
                     accountType: row.accountType,
-                    tenure: row.tenure,
+                    tenure: parseInt(row.tenure),
                     branch: row.branch,
                     applicantName: row.applicantName,
                     gender: row.gender,
                     dob: row.dob ? new Date(row.dob) : null,
                     occupation: row.occupation,
                     phone: formatPhone(row.phone),
+                    mobile: formatPhone(row.phone),
                     fatherOrHusbandName: row.fatherOrHusbandName,
-                    guardianName: row.guardianName,
+                    relation: row.relation,
                     address: {
                         village: row.village,
                         post: row.post,
@@ -232,23 +248,34 @@ export const importAccountsFromCSV = async (req, res) => {
                         state: row.state,
                         pincode: row.pincode,
                     },
-                    accountMobile: formatPhone(row.accountMobile),
                     aadhar: row.aadhar,
                     depositAmount: parseFloat(row.depositAmount),
                     introducerName: row.introducerName,
                     membershipNumber: row.membershipNumber,
                     introducerKnownSince: row.introducerKnownSince,
-                    managerName: row.managerName,
-                    lekhpalOrRokapal: row.lekhpalOrRokapal,
+                    accountNumber: row.accountNumber || await generateNextAccountNumber(),
                     nomineeName: row.nomineeName,
                     nomineeRelation: row.nomineeRelation,
                     nomineeAge: parseInt(row.nomineeAge),
+                    managerName: row.managerName,
+                    lekhpalOrRokapal: row.lekhpalOrRokapal,
                     formDate: row.formDate ? new Date(row.formDate) : null,
                     accountOpenDate: row.accountOpenDate ? new Date(row.accountOpenDate) : null,
+                    signaturePath: row.signaturePath || null,
+                    verifierSignaturePath: row.verifierSignaturePath || null,
+                    profileImage: row.profileImage || null,
                 };
 
-                payload.accountNumber = row.accountNumber || await generateNextAccountNumber();
-                await Account.create(payload);
+                const account = await Account.create(payload);
+                // ✅ Create initial deposit transaction
+                await createTransactionAndLedger({
+                    account,
+                    type: 'deposit',
+                    amount: payload.depositAmount,
+                    description: 'Initial deposit',
+                    date: payload.accountOpenDate || new Date(),
+                    createdBy: req.user?.name || 'System'
+                });
                 imported.push(payload.accountNumber);
             } catch (err) {
                 console.error(`❌ Row ${i + 2} failed:`, err.message);
@@ -257,6 +284,17 @@ export const importAccountsFromCSV = async (req, res) => {
         }
 
         fs.unlinkSync(filePath); // Clean up temp file
+
+        if (imported.length === 0 && failedRows.length === 0) {
+            return successResponse(res, 200, "No accounts imported. All records were duplicates or invalid.", {
+                importedCount: 0,
+                skippedCount: skipped.length,
+                failedCount: 0,
+                imported: [],
+                skipped,
+                failedRows: [],
+            });
+        }
 
         return successResponse(res, 200, "CSV import completed", {
             importedCount: imported.length,
@@ -272,4 +310,44 @@ export const importAccountsFromCSV = async (req, res) => {
     }
 };
 
+// ✅ GET /accounts/total-amount
+export const getTotalDepositAmount = async (req, res) => {
+    try {
+        const result = await Account.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: { $sum: "$depositAmount" }
+                }
+            }
+        ]);
 
+        const totalAmount = result[0]?.totalAmount || 0;
+
+        return successResponse(res, 200, "Total deposit amount calculated", { totalAmount });
+    } catch (err) {
+        console.error('❌ Error calculating total amount:', err);
+        return errorResponse(res, 500, "Failed to calculate total amount", err.message);
+    }
+};
+
+// ✅ GET /accounts/total-balance
+export const getTotalBalance = async (req, res) => {
+    try {
+        const result = await Account.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalBalance: { $sum: "$balance" }
+                }
+            }
+        ]);
+
+        const totalBalance = result[0]?.totalBalance || 0;
+
+        return successResponse(res, 200, "Total balance calculated", { totalBalance });
+    } catch (err) {
+        console.error('❌ Error calculating total balance:', err);
+        return errorResponse(res, 500, "Failed to calculate total balance", err.message);
+    }
+};

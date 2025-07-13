@@ -7,6 +7,7 @@ import { sortByField, renderSortIcon } from '../../utils/sortUtils';
 import { fetchUserPermissions, hasPermission } from '../../utils/permissionUtils';
 import CommonModal from '../../components/common/CommonModal';
 import { getAllAccounts, importAccountsFromCSV } from '../../api/account';
+import { format } from 'date-fns';
 
 const REQUIRED_HEADERS = [
     "accountType",
@@ -18,14 +19,13 @@ const REQUIRED_HEADERS = [
     "occupation",
     "phone",
     "fatherOrHusbandName",
-    "guardianName",
+    "relation",
     "village",
     "post",
     "block",
     "district",
     "state",
     "pincode",
-    "accountMobile",
     "aadhar",
     "depositAmount",
     "introducerName",
@@ -175,9 +175,11 @@ const Accounts = () => {
                                 onChange={(e) => setFilters(prev => ({ ...prev, accountType: e.target.value }))}
                             >
                                 <option value="">All</option>
-                                <option value="Savings">Savings</option>
-                                <option value="Fixed">Fixed</option>
-                                <option value="Recurring">Recurring</option>
+                                <option value="Recurring">RD / आवर्ती जमा</option>
+                                <option value="Savings">Saving / बचत</option>
+                                <option value="Fixed">Fixed / सावधि जमा</option>
+                                <option value="Mis">MIS / मासिक आय योजना</option>
+                                <option value="Loan">Loan / ऋण</option>
                             </select>
                         </div>
 
@@ -206,9 +208,9 @@ const Accounts = () => {
                             >
                                 <option value="">All</option>
                                 <option value="6">6 Months</option>
-                                <option value="1">1 Year</option>
-                                <option value="3">3 Years</option>
-                                <option value="5">5 Years</option>
+                                <option value="12">1 Year</option>
+                                <option value="18">3 Years</option>
+                                <option value="30">5 Years</option>
                             </select>
                         </div>
 
@@ -271,104 +273,6 @@ const Accounts = () => {
                     </button>
                 </div>
 
-                {/* <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="mb-0 theme-text">Account Details</h4>
-                    <div className="d-flex gap-2 mb-3">
-                        <div>
-                            <select
-                                className="form-select form-select-sm"
-                                value={filters.accountType}
-                                onChange={(e) => setFilters(prev => ({ ...prev, accountType: e.target.value }))}
-                            >
-                                <option value="">All Account Types</option>
-                                <option value="Savings">Savings</option>
-                                <option value="Fixed">Fixed</option>
-                                <option value="Recurring">Recurring</option>
-                            </select>
-                        </div>
-                        <div>
-                            <select
-                                className="form-select form-select-sm"
-                                value={filters.gender}
-                                onChange={(e) => setFilters(prev => ({ ...prev, gender: e.target.value }))}
-                            >
-                                <option value="">All Genders</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <select
-                                className="form-select form-select-sm"
-                                value={filters.tenure}
-                                onChange={(e) => setFilters(prev => ({ ...prev, tenure: e.target.value }))}
-                            >
-                                <option value="">All Tenures</option>
-                                <option value="6">6 Months</option>
-                                <option value="1">1 Year</option>
-                                <option value="3">3 Years</option>
-                                <option value="5">5 Years</option>
-                            </select>
-                        </div>
-                        <div>
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setFilters({ accountType: '', branch: '', gender: '', tenure: '' })}
-                            >
-                                Clear Filters
-                            </button>
-                        </div>
-
-                        <div>
-                            <input
-                                type="text"
-                                className="form-control form-control-sm theme-input-sm"
-                                placeholder="Search..."
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <button
-                                className="btn btn-md btn-outline-success"
-                                onClick={() => {
-                                    const link = document.createElement('a');
-                                    link.href = `${process.env.PUBLIC_URL}/accounts_sample.csv`;
-                                    link.setAttribute('download', 'accounts_sample.csv');
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                }}
-                            >
-                                📥 Download Template
-                            </button>
-                        </div>
-                        <div>
-                            <button className="btn btn-md btn-outline-primary" onClick={() => {
-                                if (!hasPermission(userPermissions, 'POST:/accounts')) {
-                                    setShow403Modal(true);
-                                    return;
-                                }
-                                setShowImportModal(true);
-                            }}>
-                                📤 Import
-                            </button>
-                        </div>
-                        <div>
-                            <button className="btn btn-md btn-primary" onClick={() => {
-                                if (!hasPermission(userPermissions, 'POST:/accounts')) {
-                                    setShow403Modal(true);
-                                    return;
-                                }
-                                navigate(adminRoute('/account/create'));
-                            }}>
-                                + Create Account
-                            </button>
-                        </div>
-                    </div>
-                </div> */}
-
                 <div className="table-responsive">
                     <table className="table theme-table table-bordered table-hover align-middle">
                         <thead>
@@ -376,13 +280,14 @@ const Accounts = () => {
                                 <th>#</th>
                                 <th onClick={() => handleSort('user.name')}>
                                     <div className="d-flex justify-content-between align-items-center">
-                                        <span>Name</span>
+                                        <span>Account Name</span>
                                         {renderSortIcon('user.name', sortField, sortOrder)}
                                     </div>
                                 </th>
+                                <th>Account Type</th>
                                 <th>Account Number</th>
-                                <th>Branch</th>
-                                <th>Deposited Amount</th>
+                                <th>Total Amount</th>
+                                <th>Opening Date</th>
                                 <th className="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -391,9 +296,10 @@ const Accounts = () => {
                                 <tr key={acc._id}>
                                     <td>{(currentPage - 1) * accountsPerPage + idx + 1}</td>
                                     <td>{acc.applicantName}</td>
+                                    <td>{acc.accountType || '-'}</td>
                                     <td>{acc.accountNumber || '-'}</td>
-                                    <td>{acc.branch || '-'}</td>
-                                    <td>{acc.depositAmount || '-'}</td>
+                                    <td>{acc.balance || '-'}</td>
+                                    <td>{format(new Date(acc.accountOpenDate), 'dd MMM yyyy')}</td>
                                     <td className="text-center">
                                         <button className="btn btn-sm btn-outline-info me-2" onClick={() => {
                                             if (!hasPermission(userPermissions, `GET:/accounts/${acc?._id}`)) {
@@ -402,13 +308,13 @@ const Accounts = () => {
                                             }
                                             navigate(adminRoute(`/account/view/${acc?._id}`), { state: { accountData: acc } });
                                         }}>View</button>
-                                        <button className="btn btn-sm btn-outline-secondary" onClick={() => {
+                                        {/* <button className="btn btn-sm btn-outline-secondary" onClick={() => {
                                             if (!hasPermission(userPermissions, 'POST:/accounts')) {
                                                 setShow403Modal(true);
                                                 return;
                                             }
                                             navigate(adminRoute(`/account/edit/${acc?._id}`), { state: { accountData: acc } });
-                                        }}>Edit</button>
+                                        }}>Edit</button> */}
                                     </td>
                                 </tr>
                             ))}

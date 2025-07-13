@@ -7,6 +7,8 @@ import {
     badRequestResponse,
     notFoundResponse
 } from "../utils/response.js";
+import Account from "../models/Account.js";
+import { generateNextAccountNumber } from "./accountController.js";
 
 // ✅ Create or Update (Upsert) Ledger
 export const upsertLedger = async (req, res) => {
@@ -16,7 +18,6 @@ export const upsertLedger = async (req, res) => {
             particulars,
             transactionType,
             amount,
-            balance,
             description,
             date,
             createdBy,
@@ -26,18 +27,50 @@ export const upsertLedger = async (req, res) => {
             return badRequestResponse(res, 400, "Required fields missing");
         }
 
+        const amt = parseFloat(amount);
+
+        // 🔍 Try to find existing account
+        let account = await Account.findOne({ applicantName: particulars });
+
+        // 🔁 If no account, create one
+        if (!account) {
+            const newAccountNumber = await generateNextAccountNumber();
+            const initBalance = transactionType === 'withdrawal' ? amt : 0;
+
+            account = await Account.create({
+                applicantName: particulars,
+                accountNumber: newAccountNumber,
+                balance: initBalance,
+                accountType: 'Auto-Created',
+                branch: 'Auto',
+                accountOpenDate: date || new Date(),
+            });
+        } else {
+            // ✅ Update existing account balance
+            if (transactionType === 'withdrawal') {
+                account.balance += amt;
+            } else if (transactionType === 'deposit') {
+                if (account.balance <= 0 || account.balance < amt) {
+                    return badRequestResponse(res, 400, "Insufficient balance for debit transaction");
+                }
+                account.balance -= amt;
+            }
+
+            await account.save();
+        }
+
+        // 💾 Save ledger entry
         const payload = {
             particulars,
             transactionType,
-            amount,
-            balance,
+            amount: amt,
+            balance: account.balance,
             description,
-            date,
-            createdBy,
+            date: date || new Date(),
+            createdBy: createdBy || req.user?.name || 'Manual Entry',
         };
 
         let entry;
-
         if (ledgerId) {
             entry = await Ledger.findByIdAndUpdate(ledgerId, payload, { new: true });
             if (!entry) return notFoundResponse(res, 404, "Ledger entry not found");
@@ -45,9 +78,9 @@ export const upsertLedger = async (req, res) => {
             entry = await Ledger.create(payload);
         }
 
-        return successResponse(res, 200, "Ledger entry saved successfully", entry);
+        return successResponse(res, 200, "Ledger entry saved and account handled", entry);
     } catch (err) {
-        console.error(err);
+        console.error("❌ Ledger Save Error:", err);
         return errorResponse(res, 500, "Failed to save ledger", err.message);
     }
 };
@@ -72,74 +105,121 @@ export const getAllLedgers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        const search = req.query.search || '';
-        const transactionType = req.query.transactionType || '';
+        const skip = (page - 1) * limit;
 
-        const query = {
-            $or: [
-                { particulars: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } },
-            ]
-        };
+        const {
+            search = '',
+            applicantName = '',
+            transactionType = '',
+            accountType = ''
+        } = req.query;
 
-        if (transactionType) {
-            query.transactionType = transactionType;
+        const matchConditions = [];
+
+        if (search) {
+            matchConditions.push({
+                $or: [
+                    { particulars: { $regex: search, $options: 'i' } },
+                    { description: { $regex: search, $options: 'i' } }
+                ]
+            });
         }
 
-        const allEntries = await Ledger.find(query).sort({ date: 1 });
+        if (applicantName) {
+            matchConditions.push({ particulars: { $regex: applicantName, $options: 'i' } });
+        }
+
+        if (transactionType) {
+            matchConditions.push({ transactionType });
+        }
+
+        const pipeline = [
+            {
+                $match: matchConditions.length ? { $and: matchConditions } : {}
+            },
+            {
+                $lookup: {
+                    from: 'accounts',
+                    localField: 'particulars',
+                    foreignField: 'applicantName',
+                    as: 'accountInfo'
+                }
+            },
+            { $unwind: { path: '$accountInfo', preserveNullAndEmptyArrays: true } }
+        ];
+
+        if (accountType) {
+            pipeline.push({ $match: { 'accountInfo.accountType': accountType } });
+        }
+
+        const allEntries = await Ledger.aggregate([...pipeline]);
+
+        const paginatedEntries = await Ledger.aggregate([
+            ...pipeline,
+            { $sort: { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limit }
+        ]);
 
         const particularSummary = {};
-
         let overallCredit = 0;
         let overallDebit = 0;
-        let overallBalance = 0;
 
         for (const entry of allEntries) {
-            const { date, particulars, transactionType, amount = 0 } = entry;
+            const { particulars, transactionType, amount = 0 } = entry;
+
             if (!particularSummary[particulars]) {
                 particularSummary[particulars] = {
-                    date: date,
                     particular: particulars,
                     totalCredit: 0,
                     totalDebit: 0,
-                    balance: 0
+                    totalInterest: 0,
+                    balance: 0,
                 };
             }
 
-            if (transactionType === 'debit') {
+            if (transactionType === 'deposit') {
                 particularSummary[particulars].totalCredit += amount;
                 overallCredit += amount;
                 particularSummary[particulars].balance += amount;
-                overallBalance += amount;
-            } else if (transactionType === 'credit') {
-                particularSummary[particulars].totalDebit += amount;
-                overallDebit += amount;
-                particularSummary[particulars].balance -= amount;
-                overallBalance -= amount;
+            } else if (transactionType === 'interest') {
+                particularSummary[particulars].totalCredit += amount;
+                particularSummary[particulars].totalInterest += amount;
+                overallCredit += amount;
+                particularSummary[particulars].balance += amount;
+            } else if (transactionType === 'withdrawal') {
+                if (particularSummary[particulars].balance >= amount) {
+                    particularSummary[particulars].totalDebit += amount;
+                    particularSummary[particulars].balance -= amount;
+                    overallDebit += amount;
+                } else {
+                    particularSummary[particulars].invalidDebit = true;
+                }
             }
         }
 
         const summaryArray = Object.values(particularSummary);
 
-        const total = allEntries.length;
-        const paginatedEntries = await Ledger.find(query)
-            .sort({ date: -1 })
-            .skip((page - 1) * limit)
-            .limit(limit);
+        const accountTotal = await Account.aggregate([
+            { $group: { _id: null, totalBalance: { $sum: "$balance" } } }
+        ]);
+        const totalBalance = accountTotal[0]?.totalBalance || 0;
 
-        return successResponse(res, 200, "Ledger entries and particular-wise summary", {
+        return successResponse(res, 200, "Ledger entries and summary", {
             summary: {
                 overallCredit,
                 overallDebit,
-                overallBalance,
-                particularSummary: summaryArray,
+                overallBalance: overallCredit - overallDebit,
+                particularSummary: summaryArray
             },
             entries: paginatedEntries,
-            totalPages: Math.ceil(total / limit),
+            totalBalance,
+            totalPages: Math.ceil(allEntries.length / limit),
             currentPage: page,
-            totalCount: total
+            totalCount: allEntries.length
         });
     } catch (err) {
+        console.error("❌ Fetch error:", err);
         return errorResponse(res, 500, "Failed to fetch ledgers", err.message);
     }
 };
@@ -208,5 +288,44 @@ export const importLedgerFromCSV = async (req, res) => {
         });
     } catch (err) {
         return errorResponse(res, 500, "CSV import failed", err.message);
+    }
+};
+
+export const getOverallFinancialSummary = async (req, res) => {
+    try {
+        // 1. Aggregate total balance from Accounts
+        const accountAgg = await Account.aggregate([
+            { $group: { _id: null, totalAccountBalance: { $sum: "$balance" } } }
+        ]);
+        const totalAccountBalance = accountAgg[0]?.totalAccountBalance || 0;
+
+        // 2. Calculate ledger totals
+        const ledgers = await Ledger.find().lean();
+
+        let totalCredit = 0;
+        let totalDebit = 0;
+
+        for (const entry of ledgers) {
+            if (entry.transactionType === 'withdrawal') {
+                totalCredit += entry.amount || 0;
+            } else if (entry.transactionType === 'deposit') {
+                totalDebit += entry.amount || 0;
+            }
+        }
+
+        const totalLedgerBalance = totalCredit - totalDebit;
+
+        return successResponse(res, 200, "Financial summary fetched successfully", {
+            totalAccountBalance,
+            ledger: {
+                totalCredit,
+                totalDebit,
+                totalLedgerBalance,
+            },
+            grandTotal: totalAccountBalance + totalLedgerBalance
+        });
+    } catch (err) {
+        console.error("❌ Error calculating summary:", err);
+        return errorResponse(res, 500, "Failed to calculate financial summary", err.message);
     }
 };
