@@ -166,7 +166,7 @@ const CreateOrEditLedger = () => {
                         </div>
 
                         <div className="col-md-4 mb-3">
-                            <label className='theme-label text-black'>Amount ($) <span className="text-danger">*</span></label>
+                            <label className='theme-label text-black'>Amount (₹) <span className="text-danger">*</span></label>
                             <input
                                 type="number"
                                 name="amount"

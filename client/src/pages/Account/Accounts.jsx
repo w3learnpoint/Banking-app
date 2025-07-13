@@ -243,7 +243,7 @@ const Accounts = () => {
                             document.body.removeChild(link);
                         }}
                     >
-                        📥 Download Template
+                       <i class="fa-solid fa-download me-1"></i> Download Template
                     </button>
 
                     <button
@@ -256,7 +256,7 @@ const Accounts = () => {
                             setShowImportModal(true);
                         }}
                     >
-                        📤 Import
+                        <i class="fa-solid fa-file-import me-2"></i> Import
                     </button>
 
                     <button
@@ -301,13 +301,13 @@ const Accounts = () => {
                                     <td>{acc.balance || '-'}</td>
                                     <td>{format(new Date(acc.accountOpenDate), 'dd MMM yyyy')}</td>
                                     <td className="text-center">
-                                        <button className="btn btn-sm btn-outline-info me-2" onClick={() => {
+                                        <button className="btn btn-sm btn-outline-success" onClick={() => {
                                             if (!hasPermission(userPermissions, `GET:/accounts/${acc?._id}`)) {
                                                 setShow403Modal(true);
                                                 return;
                                             }
                                             navigate(adminRoute(`/account/view/${acc?._id}`), { state: { accountData: acc } });
-                                        }}>View</button>
+                                        }}> <i class="fa-solid fa-eye me-1"></i> View </button>
                                         {/* <button className="btn btn-sm btn-outline-secondary" onClick={() => {
                                             if (!hasPermission(userPermissions, 'POST:/accounts')) {
                                                 setShow403Modal(true);
@@ -328,9 +328,9 @@ const Accounts = () => {
                 </div>
 
                 <div className="d-flex justify-content-end mt-3">
-                    <button className="btn btn-sm btn-secondary me-2" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
-                    <span className="align-self-center">Page {currentPage} of {totalPages}</span>
-                    <button className="btn btn-sm btn-secondary ms-2" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                    <button className="btn btn-sm btn-dark me-2" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
+                    <span className="align-self-center text-dark">Page {currentPage} of {totalPages}</span>
+                    <button className="btn btn-sm btn-dark ms-2" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
                 </div>
             </div>
 

@@ -59,12 +59,14 @@ const AdminHeader = () => {
                     {/* Right: Country + Notifications + Messages + User */}
 
 <div className='d-flex align-items-center gap-3 me-3'>
-                       <a href={adminRoute('/deposit')} className='btn btn-sm btn-primary'>
-                        <i className='fa-solid fa-building-columns me-2'></i> Deposit 
+                       <a href={adminRoute('/transaction/create')} className='btn btn-sm btn-primary'>
+                        <i className='fa-solid fa-building-columns me-2'></i> Add New Transaction 
                         </a>
-                          <button className='btn btn-sm btn-primary'>
-                            <i className='fa-solid fa-money-bill-wave me-2'></i> Withdraw
-                          </button>
+                           
+                        <a href={adminRoute('/account/create')} className='btn btn-sm btn-primary'>
+                            <i class="fa-solid fa-user-plus me-1"></i> Add New Account 
+                        </a>
+
                           </div>
 
                     <div className='d-flex align-items-center gap-3'>

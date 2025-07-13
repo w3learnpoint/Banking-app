@@ -118,7 +118,7 @@ const Ledger = () => {
                             <button
                                 className="btn btn-sm btn-outline-secondary"
                                 onClick={handleClearFilters}
-                            >
+                            > <i class="fa-solid fa-filter me-1"></i>
                                 Clear Filters
                             </button>
                         </div>
@@ -207,15 +207,15 @@ const Ledger = () => {
                 {/* Pagination */}
                 <div className="d-flex justify-content-end align-items-center gap-2">
                     <button
-                        className="btn btn-sm btn-secondary"
+                        className="btn btn-sm btn-dark"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                     >
                         Prev
                     </button>
-                    <span>Page {currentPage} of {totalPages}</span>
+                    <span className='text-dark'>Page {currentPage} of {totalPages}</span>
                     <button
-                        className="btn btn-sm btn-secondary"
+                        className="btn btn-sm btn-dark"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                     >
