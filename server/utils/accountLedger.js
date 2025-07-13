@@ -23,7 +23,7 @@ export const createTransactionAndLedger = async ({ account, type, amount, descri
     // 🧾 Create corresponding ledger entry
     await Ledger.create({
         particulars: account.applicantName,
-        transactionType: type === 'deposit' ? 'credit' : 'debit', // reverse
+        transactionType: type, // reverse
         amount: parsedAmount,
         balance: account.balance,
         description,

@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const ledgerSchema = new Schema({
-    particulars: { type: String, required: true }, // e.g. "Account Deposit", "Withdrawal"
-    transactionType: { type: String, enum: ["debit", "credit"], required: true },
+    particulars: { type: String, required: true },
+    transactionType: { type: String, enum: ['deposit', 'withdrawal', 'interest'], required: true },
     description: { type: String },
     date: { type: Date, default: Date.now },
     amount: { type: Number, required: true },

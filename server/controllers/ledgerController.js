@@ -35,7 +35,7 @@ export const upsertLedger = async (req, res) => {
         // 🔁 If no account, create one
         if (!account) {
             const newAccountNumber = await generateNextAccountNumber();
-            const initBalance = transactionType === 'debit' ? amt : 0;
+            const initBalance = transactionType === 'withdrawal' ? amt : 0;
 
             account = await Account.create({
                 applicantName: particulars,
@@ -47,9 +47,9 @@ export const upsertLedger = async (req, res) => {
             });
         } else {
             // ✅ Update existing account balance
-            if (transactionType === 'debit') {
+            if (transactionType === 'withdrawal') {
                 account.balance += amt;
-            } else if (transactionType === 'credit') {
+            } else if (transactionType === 'deposit') {
                 if (account.balance <= 0 || account.balance < amt) {
                     return badRequestResponse(res, 400, "Insufficient balance for debit transaction");
                 }
@@ -156,7 +156,7 @@ export const getAllLedgers = async (req, res) => {
 
         const paginatedEntries = await Ledger.aggregate([
             ...pipeline,
-            { $sort: { date: -1 } },
+            { $sort: { createdAt: -1 } },
             { $skip: skip },
             { $limit: limit }
         ]);
@@ -173,15 +173,21 @@ export const getAllLedgers = async (req, res) => {
                     particular: particulars,
                     totalCredit: 0,
                     totalDebit: 0,
+                    totalInterest: 0,
                     balance: 0,
                 };
             }
 
-            if (transactionType === 'credit') {
+            if (transactionType === 'deposit') {
                 particularSummary[particulars].totalCredit += amount;
                 overallCredit += amount;
                 particularSummary[particulars].balance += amount;
-            } else if (transactionType === 'debit') {
+            } else if (transactionType === 'interest') {
+                particularSummary[particulars].totalCredit += amount;
+                particularSummary[particulars].totalInterest += amount;
+                overallCredit += amount;
+                particularSummary[particulars].balance += amount;
+            } else if (transactionType === 'withdrawal') {
                 if (particularSummary[particulars].balance >= amount) {
                     particularSummary[particulars].totalDebit += amount;
                     particularSummary[particulars].balance -= amount;
@@ -203,7 +209,7 @@ export const getAllLedgers = async (req, res) => {
             summary: {
                 overallCredit,
                 overallDebit,
-                overallBalance: overallCredit > 0 ? (overallCredit - overallDebit) : 0,
+                overallBalance: overallCredit - overallDebit,
                 particularSummary: summaryArray
             },
             entries: paginatedEntries,
@@ -300,9 +306,9 @@ export const getOverallFinancialSummary = async (req, res) => {
         let totalDebit = 0;
 
         for (const entry of ledgers) {
-            if (entry.transactionType === 'debit') {
+            if (entry.transactionType === 'withdrawal') {
                 totalCredit += entry.amount || 0;
-            } else if (entry.transactionType === 'credit') {
+            } else if (entry.transactionType === 'deposit') {
                 totalDebit += entry.amount || 0;
             }
         }

@@ -91,8 +91,9 @@ const Ledger = () => {
                                 onChange={handleFilterChange}
                             >
                                 <option value="">All</option>
-                                <option value="debit">Debit / निकासी</option>
-                                <option value="credit">Credit / जमा</option>
+                                <option value="deposit">Deposited / जमा</option>
+                                <option value="withdrawal">Withdrawn / निकासी</option>
+                                <option value="interest">Interest / ब्याज</option>
                             </Form.Select>
                         </div>
 
@@ -156,23 +157,25 @@ const Ledger = () => {
                                 <th>Particular</th>
                                 <th>Total Credit (₹)</th>
                                 <th>Total Debit (₹)</th>
+                                <th>Total Interest (₹)</th>
                                 <th>Balance (₹)</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedEntries.length > 0 ? (
-                                paginatedEntries.map((item, index) => (
+                            {particularSummary.length > 0 ? (
+                                particularSummary.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{item.particulars}</td>
-                                        <td>{item.transactionType === 'credit' ? item.amount.toFixed(2) : '-'}</td>
-                                        <td>{item.transactionType === 'debit' ? item.amount.toFixed(2) : '-'}</td>
-                                        <td>{item.balance?.toFixed(2)}</td>
+                                        <td>{item.particular}</td>
+                                        <td>{item.totalCredit?.toFixed(2) || 0}</td>
+                                        <td>{item.totalDebit?.toFixed(2) || 0}</td>
+                                        <td>{item.totalInterest?.toFixed(2) || 0}</td>
+                                        <td>{item.balance?.toFixed(2) || 0}</td>
                                         <td>
                                             <button
                                                 className="btn btn-sm btn-outline-primary"
                                                 onClick={() =>
-                                                    navigate(adminRoute(`/ledger/particular/${item.particulars?.replace(/\s+/g, '-')}`))
+                                                    navigate(adminRoute(`/ledger/particular/${item.particular?.replace(/\s+/g, '-')}`))
                                                 }
                                             >
                                                 View Summary
@@ -182,11 +185,13 @@ const Ledger = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="text-center">
+                                    <td colSpan="6" className="text-center">
                                         No ledger entries found.
                                     </td>
                                 </tr>
                             )}
+
+
 
                             <tr className="fw-bold bg-light">
                                 <td>Total</td>
